@@ -28,4 +28,12 @@ const adminOnly = (req, res, next) => {
   } else return res.status(403).json({ message: "Not authorized as admin" });
 };
 
-module.exports = { protect, adminOnly };
+
+const superAdminOnly = (req,res,next) => {
+  if (req.user.role==="super_admin") {
+    return next();
+  }
+  else return res.status(403).json({message: "Not authorized as super admin"});
+}
+
+module.exports = { protect, adminOnly,superAdminOnly };

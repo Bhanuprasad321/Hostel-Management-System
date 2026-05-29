@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth/",authRoutes);
-
+app.use("/api/",authRoutes);
 app.listen(2000, () => {
   console.log(`App is running at port ${2000}`);
 });
