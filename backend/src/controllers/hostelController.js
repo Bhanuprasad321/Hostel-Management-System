@@ -21,5 +21,15 @@ const createHostel = async (req,res) => {
 }
 
 
+const getHostels = async (req,res) => {
+    try {
+        const [hostels] = await db.promise().query('SELECT * FROM hostels');
+        return res.status(200).json(hostels);
+    }   
+    catch (err) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+}
 
-module.exports = {createHostel}
+
+module.exports = {createHostel,getHostels}

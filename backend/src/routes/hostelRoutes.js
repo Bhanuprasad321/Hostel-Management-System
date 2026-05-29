@@ -1,8 +1,9 @@
-const {superAdminOnly, protect} = require('../middleware/authMiddleware');
-const express = require('express');
+const { superAdminOnly, protect } = require("../middleware/authMiddleware");
+const express = require("express");
 const route = express.Router();
-const {createHostel} = require('../controllers/hostelController')
+const { createHostel, getHostels } = require("../controllers/hostelController");
 
-route.post('/',protect,superAdminOnly,createHostel);
+route.post("/", protect, superAdminOnly, createHostel);
+route.get("/", protect, superAdminOnly, getHostels);
 
-module.exports=route;
+module.exports = route;
