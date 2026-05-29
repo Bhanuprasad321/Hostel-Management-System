@@ -1,10 +1,10 @@
 require("dotenv").config();
-const {connectSql} = require('./config/mysql');
+const { connectSql } = require("./config/mysql");
 
 connectSql();
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require("./routes/authRoutes");
 const express = require("express");
-
+const hostelRoutes = require("./routes/hostelRoutes");
 const app = express();
 app.use(express.json());
 
@@ -13,8 +13,10 @@ app.get("/", (req, res) => {
   res.json("Hello");
 });
 
-app.use("/api/auth/",authRoutes);
-app.use("/api/",authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api", authRoutes);//testing 
+app.use("/api/hostels", hostelRoutes);
+
 app.listen(2000, () => {
   console.log(`App is running at port ${2000}`);
 });
