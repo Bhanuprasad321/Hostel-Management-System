@@ -1,4 +1,0 @@
-super admin email = superadmin@gmail.com
-super admin password = superadmin123
-admin email = ramesh@gmail.com
-admin password = admin123
