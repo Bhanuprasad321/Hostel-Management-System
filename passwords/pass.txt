@@ -2,3 +2,7 @@ super admin email = superadmin@gmail.com
 super admin password = superadmin123
 admin email = ramesh@gmail.com
 admin password = admin123
+admin email = surya123@gmail.com
+admin password = surya123
+student email = tharun123@gmail.com
+student password = tharun123

@@ -7,5 +7,4 @@ route.get('/users/me',protect,handleUser);
 route.get('/test', (req,res)=>{
     res.send('Auth routes working');
 });
-
 module.exports = route;

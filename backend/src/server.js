@@ -5,6 +5,7 @@ connectSql();
 const authRoutes = require("./routes/authRoutes");
 const express = require("express");
 const hostelRoutes = require("./routes/hostelRoutes");
+const studentRoutes = require('./routes/studentRoutes')
 const app = express();
 app.use(express.json());
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api", authRoutes);//testing 
 app.use("/api/hostels", hostelRoutes);
+app.use("/api/students",studentRoutes);
 
 app.listen(2000, () => {
   console.log(`App is running at port ${2000}`);
