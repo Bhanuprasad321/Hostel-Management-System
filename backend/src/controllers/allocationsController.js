@@ -19,7 +19,7 @@ const createAllocation = async (req, res) => {
         student_id,
         hostel_id,
       ]);
-    if (student.length === 0|| student[0].role !== "Student")
+    if (student.length === 0|| student[0].role !== "student")
       return res
         .status(404)
         .json({ message: "Student with entered id is not found" });
