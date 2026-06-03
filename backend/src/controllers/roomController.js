@@ -60,21 +60,40 @@ const getRoomDetails = async (req, res) => {
   }
 };
 
-const updateRoom = async (req, res) => { //need to change
+const updateRoom = async (req, res) => {
+  //need to change
   try {
-    const { capacity, current_occupancy } = req.body;
+    const { capacity } = req.body;
     const hostel_id = req.user.hostel_id;
     const room_number = req.params.id;
-    if (!capacity || current_occupancy>=0) {
-      return res.status(200).json({ message: "The entries cannot be empty" });
+    if (!capacity || capacity <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Enter the valid capacity value!" });
     }
-
+    const [room] = await db
+      .promise()
+      .query("SELECT * FROM rooms WHERE hostel_id = ? AND room_number = ?", [
+        hostel_id,
+        room_number,
+      ]);
+    if (room.length === 0)
+      return res
+        .status(404)
+        .json({ message: "No room found with entered room number" });
+    const current_occupancy = room[0].current_occupancy;
+    if (!(capacity >= current_occupancy)) {
+      return res
+        .status(409)
+        .json({ message: "cannot update the capacity less than occupancy" });
+    }
     await db
       .promise()
       .query(
-        "UPDATE rooms SET capacity = ? , current_occupancy = ? WHERE hostel_id = ? AND room_number = ?",
-        [capacity, current_occupancy, hostel_id, room_number],
+        "UPDATE rooms SET capacity = ? WHERE hostel_id = ? AND room_number = ?",
+        [capacity, hostel_id, room_number],
       );
+
     return res
       .status(200)
       .json({ message: "Successfully updated the room details" });
@@ -83,5 +102,4 @@ const updateRoom = async (req, res) => { //need to change
   }
 };
 
-
-module.exports = {createRoom,getAllRooms,getRoomDetails,updateRoom};
+module.exports = { createRoom, getAllRooms, getRoomDetails, updateRoom };
