@@ -1,6 +1,7 @@
 const { db } = require("../config/mysql");
 //Allocation module is a good candidate for transactions later.
 const createAllocation = async (req, res) => {
+  let connection = await db.promise().getConnection();
   try {
     //goal:
     //user exists?
@@ -19,7 +20,7 @@ const createAllocation = async (req, res) => {
         student_id,
         hostel_id,
       ]);
-    if (student.length === 0|| student[0].role !== "student")
+    if (student.length === 0 || student[0].role !== "student")
       return res
         .status(404)
         .json({ message: "Student with entered id is not found" });
@@ -51,23 +52,29 @@ const createAllocation = async (req, res) => {
         .status(409)
         .json({ message: "The room with entered ID is already full" });
     //creating a new allocation
-    await db
-      .promise()
-      .query(
-        "INSERT INTO allocations(hostel_id,student_id,room_id,status) VALUES (?,?,?,?)",
-        [hostel_id, student_id, room_id, "active"],
-      );
-    await db
-      .promise()
-      .query(
-        "UPDATE rooms SET current_occupancy = ? WHERE hostel_id = ? AND id = ?",
-        [room[0].current_occupancy + 1, hostel_id, room_id],
-      );
+
+    await connection.beginTransaction();
+    await connection.query(
+      "INSERT INTO allocations(hostel_id,student_id,room_id,status) VALUES (?,?,?,?)",
+      [hostel_id, student_id, room_id, "active"],
+    );
+    await connection.query(
+      "UPDATE rooms SET current_occupancy = ? WHERE hostel_id = ? AND id = ?",
+      [room[0].current_occupancy + 1, hostel_id, room_id],
+    );
+    await connection.commit();
     return res
       .status(200)
       .json({ message: "Successfully allocated the room to the student" });
   } catch (err) {
+    if (connection) {
+      await connection.rollback();
+    }
     return res.status(500).json({ message: "Internal server error" });
+  } finally {
+    if (connection) {
+      await connection.release();
+    }
   }
 };
 
