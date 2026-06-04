@@ -116,6 +116,7 @@ const getAllocation = async (req, res) => {
 };
 
 const vacateStudent = async (req, res) => {
+  let connection = await db.promise().getConnection();
   try {
     const student_id = req.params.id;
     const hostel_id = req.user.hostel_id;
@@ -131,29 +132,32 @@ const vacateStudent = async (req, res) => {
       });
     const room_id = allocation[0].room_id;
     const allocation_id = allocation[0].id;
-    await db
-      .promise()
-      .query(
-        "UPDATE allocations SET status = ? , vacated_at = NOW() WHERE id = ? AND student_id = ?",
-        ["vacated", allocation_id, student_id],
-      );
-    const [room] = await db
-      .promise()
-      .query("SELECT * FROM rooms WHERE id = ? AND hostel_id=?", [
-        room_id,
-        hostel_id,
-      ]);
-    await db
-      .promise()
-      .query("UPDATE rooms SET current_occupancy = ? WHERE id = ?", [
-        room[0].current_occupancy - 1,
-        room_id,
-      ]);
+    await connection.beginTransaction();
+    await connection.query(
+      "UPDATE allocations SET status = ? , vacated_at = NOW() WHERE id = ? AND student_id = ?",
+      ["vacated", allocation_id, student_id],
+    );
+    const [room] = await connection.query(
+      "SELECT * FROM rooms WHERE id = ? AND hostel_id=?",
+      [room_id, hostel_id],
+    );
+    await connection.query(
+      "UPDATE rooms SET current_occupancy = ? WHERE id = ?",
+      [room[0].current_occupancy - 1, room_id],
+    );
+    await connection.commit();
     return res
       .status(200)
       .json({ message: "Successfully updated the vacated data" });
   } catch (err) {
+    if (connection) {
+      await connection.rollback();
+    }
     return res.status(500).json({ messag: "Internal server error" });
+  } finally {
+    if (connection) {
+      await connection.release();
+    }
   }
 };
 
