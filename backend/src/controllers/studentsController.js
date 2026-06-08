@@ -35,7 +35,7 @@ const getStudents = async (req, res) => {
     const hostel_id = parseInt(req.user.hostel_id);
     const [students] = await db
       .promise()
-      .query("SELECT name,email FROM users WHERE hostel_id=? AND role = ?", [
+      .query("SELECT id, name, email FROM users WHERE hostel_id = ? AND role = ?", [
         hostel_id,
         role,
       ]);

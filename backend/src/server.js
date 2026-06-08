@@ -9,9 +9,11 @@ const studentRoutes = require("./routes/studentsRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const allocationRoutes = require("./routes/allocationsRoutes");
 const dashBoardRoutes = require("./routes/dashBoardRoutes");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   console.log("This is Home page of the website");
