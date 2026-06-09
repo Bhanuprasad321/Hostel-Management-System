@@ -1,5 +1,5 @@
 const { db } = require("../config/mysql");
-//Allocation module is a good candidate for transactions later.
+
 const createAllocation = async (req, res) => {
   let connection = await db.promise().getConnection();
   try {

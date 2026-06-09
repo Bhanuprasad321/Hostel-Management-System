@@ -1,6 +1,7 @@
 const { db } = require("../config/mysql");
 const bcrypt = require("bcrypt");
 const createHostel = async (req, res) => {
+  let connection = await db.promise().getConnection();
   try {
     const { hostel_name, address } = req.body;
     if (!hostel_name || !address) {
@@ -14,16 +15,32 @@ const createHostel = async (req, res) => {
         .status(409)
         .json({ message: "Hostel with entered name already exists" });
     }
-    await db
-      .promise()
-      .query("INSERT INTO hostels (hostel_name,address) VALUES (?,?)", [
-        hostel_name,
-        address,
-      ]);
+    await connection.beginTransaction();
+    const [result] = await connection.query(
+      "INSERT INTO hostels (hostel_name,address) VALUES (?,?)",
+      [hostel_name, address],
+    );
+    const startDate = new Date();
+
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 15);
+
+    await connection.query(
+      "INSERT INTO subscriptions (hostel_id,plan,start_date,end_date,status) VALUES (?,?,?,?,?)",
+      [result.insertId, "trial", startDate, endDate, "trial"],
+    );
+    await connection.commit();
     return res.status(200).json({ message: "New hostel is created" });
   } catch (err) {
+    if (connection) {
+      await connection.rollback();
+    }
     console.log(err);
     return res.status(500).json({ message: "Internal server error" });
+  } finally {
+    if (connection) {
+      await connection.release();
+    }
   }
 };
 
@@ -39,7 +56,7 @@ const getHostels = async (req, res) => {
 const createHostelAdmin = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const  hostel_id  = parseInt(req.params.id);
+    const hostel_id = parseInt(req.params.id);
     const role = "admin";
     if (!name || !email || !password || !hostel_id) {
       return res.status(400).json({ message: "All fields are required!" });
@@ -78,9 +95,10 @@ const getHostelAdmins = async (req, res) => {
     const hostel_id = parseInt(req.params.id);
     const [hostelAdmins] = await db
       .promise()
-      .query("SELECT id,name,email,role,hostel_id FROM users WHERE hostel_id = ? AND role = 'admin'", [
-        hostel_id,
-      ]);
+      .query(
+        "SELECT id,name,email,role,hostel_id FROM users WHERE hostel_id = ? AND role = 'admin'",
+        [hostel_id],
+      );
     return res.status(200).json(hostelAdmins);
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
