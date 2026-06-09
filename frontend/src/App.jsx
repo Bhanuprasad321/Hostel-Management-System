@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import Layout from "./pages/Layout";
 import HostelsRoute from "./pages/HostelRoute";
 import AdminRoute from "./pages/AdminROute";
+import SubscriptionRoute from "./pages/SubscriptionsRoute";
 function App() {
   return (
     <BrowserRouter>
@@ -27,6 +28,7 @@ function App() {
             <Route path="/hostel-admin" element={<AdminDashboard />} />
             <Route path="/students" element={<Students />} />
             <Route path="/rooms" element={<RoomRoute />} />
+            <Route path="/subscriptions" element={<SubscriptionRoute />} />
           </Route>
         </Route>
       </Routes>

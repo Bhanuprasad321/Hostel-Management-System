@@ -10,12 +10,14 @@ import {
   Menu,
   X,
   ChevronRight,
+  CreditCard,
 } from "lucide-react";
 
 const superAdminLinks = [
   { to: "/super-admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/hostels", label: "Hostels", icon: Building2 },
   { to: "/:id/admin/", label: "Admins", icon: Users },
+  { to: "/subscriptions", label: "Subscriptions", icon: CreditCard },
 ];
 
 const adminLinks = [
