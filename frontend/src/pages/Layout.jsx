@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Building2,
@@ -35,13 +35,42 @@ export default function DashboardLayout() {
   const user = raw ? JSON.parse(raw) : null;
   const role = user?.role;
   const navLinks = role === "super_admin" ? superAdminLinks : adminLinks;
-
+  const location = useLocation();
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
+  const getHeaderTitle = () => {
+    const path = location.pathname;
+    if (path.includes("/hostels")) return "Hostels";
+    if (path.includes("/admin/")) return "Hostel Admins"; // Matches dynamic /:id/admin/
+    if (path.includes("/subscriptions")) return "Subscriptions";
+    if (path.includes("/students")) return "Students";
+    if (path.includes("/rooms")) return "Rooms";
+    if (path.includes("/allocations")) return "Allocations";
+    return "Dashboard"; // Fallback for /super-admin and /hostel-admin
+  };
+  const getHeaderSubtitle = () => {
+    const path = location.pathname;
+    const firstName = user?.name?.split(" ")[0] ?? "there";
 
+    if (path.includes("/hostels"))
+      return "Manage and monitor tenant hostel installations";
+    if (path.includes("/admin/"))
+      return "Manage administrative profiles across platform deployments";
+    if (path.includes("/subscriptions"))
+      return "Monitor tenant licensing runtimes and tier matrices";
+    if (path.includes("/students"))
+      return "Manage student directory records and profiles";
+    if (path.includes("/rooms"))
+      return "Track room volumes, configurations, and real-time occupancy";
+    if (path.includes("/allocations"))
+      return "Review or execute room assignments and structural actions";
+
+    // Only show the personal welcome greeting on the core dashboards
+    return `Welcome back, ${firstName} 👋`;
+  };
   const initials = user?.name
     ? user.name
         .split(" ")
@@ -168,10 +197,10 @@ export default function DashboardLayout() {
 
           <div className="flex-1">
             <h1 className="text-base font-semibold text-slate-800">
-              Dashboard
+              {getHeaderTitle()}
             </h1>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              Welcome back, {user?.name?.split(" ")[0] ?? "there"} 👋
+            <p className="text-xs text-slate-400 hidden sm:block mt-0.5">
+              {getHeaderSubtitle()}
             </p>
           </div>
 
