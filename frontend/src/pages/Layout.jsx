@@ -30,47 +30,30 @@ const adminLinks = [
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const raw = localStorage.getItem("user");
   const user = raw ? JSON.parse(raw) : null;
   const role = user?.role;
   const navLinks = role === "super_admin" ? superAdminLinks : adminLinks;
-  const location = useLocation();
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
+
   const getHeaderTitle = () => {
     const path = location.pathname;
     if (path.includes("/hostels")) return "Hostels";
-    if (path.includes("/admin/")) return "Hostel Admins"; // Matches dynamic /:id/admin/
+    if (path.includes("/admin/")) return "Hostel Admins";
     if (path.includes("/subscriptions")) return "Subscriptions";
     if (path.includes("/students")) return "Students";
     if (path.includes("/rooms")) return "Rooms";
     if (path.includes("/allocations")) return "Allocations";
-    return "Dashboard"; // Fallback for /super-admin and /hostel-admin
+    return "Dashboard";
   };
-  const getHeaderSubtitle = () => {
-    const path = location.pathname;
-    const firstName = user?.name?.split(" ")[0] ?? "there";
 
-    if (path.includes("/hostels"))
-      return "Manage and monitor tenant hostel installations";
-    if (path.includes("/admin/"))
-      return "Manage administrative profiles across platform deployments";
-    if (path.includes("/subscriptions"))
-      return "Monitor tenant licensing runtimes and tier matrices";
-    if (path.includes("/students"))
-      return "Manage student directory records and profiles";
-    if (path.includes("/rooms"))
-      return "Track room volumes, configurations, and real-time occupancy";
-    if (path.includes("/allocations"))
-      return "Review or execute room assignments and structural actions";
-
-    // Only show the personal welcome greeting on the core dashboards
-    return `Welcome back, ${firstName} 👋`;
-  };
   const initials = user?.name
     ? user.name
         .split(" ")
@@ -185,33 +168,36 @@ export default function DashboardLayout() {
 
       {/* Main area */}
       <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
-        {/* Topbar */}
-        <header className="flex h-16 shrink-0 items-center gap-4 border-b border-slate-100 bg-white px-6 shadow-sm">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="md:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
-            aria-label="Open sidebar"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+        {/* Minimalist Topbar Utility Row */}
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 bg-white px-6 shadow-xs">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
+              aria-label="Open sidebar"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
 
-          <div className="flex-1">
-            <h1 className="text-base font-semibold text-slate-800">
-              {getHeaderTitle()}
-            </h1>
-            <p className="text-xs text-slate-400 hidden sm:block mt-0.5">
-              {getHeaderSubtitle()}
-            </p>
+            {/* Balanced Breadcrumb Trail */}
+            <div className="flex items-center gap-2 text-s font-medium text-slate-400 select-none">
+              <span className="tracking-wide">HostelMS</span>
+              <span className="text-slate-300">/</span>
+              <span className="text-slate-600 font-semibold">
+                {getHeaderTitle()}
+              </span>
+            </div>
           </div>
 
+          {/* Right Utility Navigation Node */}
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 text-xs font-semibold text-indigo-600 border border-indigo-100/40 shadow-xs">
               {initials}
             </div>
           </div>
         </header>
 
-        {/* Page content */}
+        {/* Dynamic Route View Page Frame */}
         <main className="flex-1 overflow-y-auto px-6 py-8">
           <Outlet />
         </main>

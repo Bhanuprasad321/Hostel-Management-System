@@ -44,7 +44,25 @@ const login = async (req, res) => {
         message: "Invalid credentials",
       });
     }
-
+    if (user.role === "admin") {
+      const [row] = await db
+        .promise()
+        .query(
+          "SELECT end_date FROM subscriptions WHERE hostel_id = ? ORDER BY end_date DESC LIMIT 1",
+          [user.hostel_id],
+        );
+      if (row.length === 0)
+        return res
+          .status(403)
+          .json({ message: "No active subscription found" });
+      const end_date = row[0].end_date;
+      if (new Date() > new Date(end_date)) {
+        return res.status(403).json({
+          message:
+            "Subscription has expired! Complete the subscription payment to continue.",
+        });
+      }
+    }
     const token = generateToken(user.id, user.role, user.hostel_id);
 
     return res.status(200).json({
