@@ -10,7 +10,7 @@ const roomRoutes = require("./routes/roomRoutes");
 const allocationRoutes = require("./routes/allocationsRoutes");
 const dashBoardRoutes = require("./routes/dashBoardRoutes");
 const subscriptionsRoutes = require("./routes/subscriptionsRoutes");
-
+const auditLogsRoutes = require("./routes/auditLogsRoutes");
 const cors = require("cors");
 
 const app = express();
@@ -30,6 +30,7 @@ app.use("/api/rooms", roomRoutes);
 app.use("/api/allocations", allocationRoutes);
 app.use("/api/dashboard", dashBoardRoutes);
 app.use("/api/subscriptions", subscriptionsRoutes);
+app.use("/api/audit-logs", auditLogsRoutes);
 
 app.listen(2000, () => {
   console.log(`App is running at port ${2000}`);

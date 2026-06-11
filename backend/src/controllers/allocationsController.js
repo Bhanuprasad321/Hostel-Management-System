@@ -1,5 +1,6 @@
 const { db } = require("../config/mysql");
 
+const createAuditLog = require("../utils/auditLog");
 const createAllocation = async (req, res) => {
   let connection = await db.promise().getConnection();
   try {
@@ -63,6 +64,11 @@ const createAllocation = async (req, res) => {
       [room[0].current_occupancy + 1, hostel_id, room_id],
     );
     await connection.commit();
+    await createAuditLog(
+      hostel_id,
+      req.user.id,
+      `Allocated student ${student_id} to room ${room_id}`,
+    );
     return res
       .status(200)
       .json({ message: "Successfully allocated the room to the student" });
@@ -146,6 +152,11 @@ const vacateStudent = async (req, res) => {
       [room[0].current_occupancy - 1, room_id],
     );
     await connection.commit();
+    await createAuditLog(
+      hostel_id,
+      req.user.id,
+      `Vacated student ${student_id}`,
+    );
     return res
       .status(200)
       .json({ message: "Successfully updated the vacated data" });

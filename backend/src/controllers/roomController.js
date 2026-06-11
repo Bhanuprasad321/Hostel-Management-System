@@ -1,5 +1,5 @@
 const { db } = require("../config/mysql");
-
+const createAuditLog = require("../utils/auditLog")
 const createRoom = async (req, res) => {
   try {
     const hostel_id = req.user.hostel_id;
@@ -24,6 +24,7 @@ const createRoom = async (req, res) => {
         "INSERT INTO rooms (hostel_id,room_number,capacity,current_occupancy) VALUES (?,?,?,?)",
         [hostel_id, room_number, capacity, 0],
       );
+    await createAuditLog(hostel_id, req.user.id, `Created room ${room_number}`);
     return res.status(200).json({ message: "New room is created" });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });

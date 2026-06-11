@@ -1,5 +1,6 @@
 const { db } = require("../config/mysql");
 const bcrypt = require("bcrypt");
+const createAuditLog = require("../utils/auditLog");
 const createHostel = async (req, res) => {
   let connection = await db.promise().getConnection();
   try {
@@ -30,6 +31,7 @@ const createHostel = async (req, res) => {
       [result.insertId, "trial", startDate, endDate, "trial"],
     );
     await connection.commit();
+    await createAuditLog(null, req.user.id, `Created hostel ${hostel_name}`);
     return res.status(200).json({ message: "New hostel is created" });
   } catch (err) {
     if (connection) {
@@ -84,8 +86,10 @@ const createHostelAdmin = async (req, res) => {
         "INSERT INTO users (name,email,password,hostel_id,role) VALUES (?,?,?,?,?)",
         [name, email, hashedPass, hostel_id, role],
       );
+    await createAuditLog(hostel_id, req.user.id, `Created admin ${name}`);
     return res.status(200).json({ message: "New hostel admin is created" });
-  } catch {
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

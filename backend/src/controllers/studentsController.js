@@ -1,6 +1,6 @@
 const { db } = require("../config/mysql");
 const bcrypt = require("bcrypt");
-
+const createAuditLog = require("../utils/auditLog")
 const createStudent = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -23,6 +23,7 @@ const createStudent = async (req, res) => {
         "INSERT INTO users (hostel_id,name,email,password,role) VALUES (?,?,?,?,?)",
         [hostel_id, name, email, hashedPass, role],
       );
+    await createAuditLog(hostel_id, req.user.id, `Created student ${name}`);
     return res.status(200).json({ message: "New student is created" });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
@@ -35,10 +36,10 @@ const getStudents = async (req, res) => {
     const hostel_id = parseInt(req.user.hostel_id);
     const [students] = await db
       .promise()
-      .query("SELECT id, name, email FROM users WHERE hostel_id = ? AND role = ?", [
-        hostel_id,
-        role,
-      ]);
+      .query(
+        "SELECT id, name, email FROM users WHERE hostel_id = ? AND role = ?",
+        [hostel_id, role],
+      );
     return res.status(200).json(students);
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });

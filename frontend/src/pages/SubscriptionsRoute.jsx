@@ -11,6 +11,8 @@ import {
   Building2,
   X,
   ExternalLink,
+  ChevronDown,
+  RefreshCw,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -70,7 +72,7 @@ function StatusBadge({ status }) {
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${meta.bg}`}
     >
       <Icon className="h-3.5 w-3.5" />
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {status ? status.charAt(0).toUpperCase() + status.slice(1) : ""}
     </span>
   );
 }
@@ -224,28 +226,181 @@ function SubscriptionDetailModal({ subscriptionId, onClose }) {
   );
 }
 
+// ─── Upgrade Plan Modal (Super Admin Control Panel) ───────────
+function UpgradePlanModal({ subscription, onClose, onUpdated }) {
+  const [plan, setPlan] = useState(subscription.plan);
+  const [status, setStatus] = useState(subscription.status);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await api.put(`/subscriptions/${subscription.id}/upgrade`, {
+        plan,
+        status,
+      });
+      onUpdated();
+      onClose();
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.message ||
+          "Failed to upgrade subscription details.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 animate-fadeIn">
+      <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden border border-slate-100">
+        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-100">
+              <CreditCard className="h-5 w-5 text-indigo-600" />
+            </div>
+            <div>
+              <h2 className="text-[15px] font-semibold text-slate-800">
+                Modify Plan Context
+              </h2>
+              <p className="text-xs text-slate-400">
+                {subscription.hostel_name}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {error && (
+            <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-slate-700">
+              Licensing Tier
+            </label>
+            <div className="relative">
+              <select
+                value={plan}
+                onChange={(e) => setPlan(e.target.value)}
+                className="w-full appearance-none rounded-xl border border-slate-200 py-2.5 pl-4 pr-10 text-sm text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition bg-white"
+              >
+                <option value="trial">Trial</option>
+                <option value="basic">Basic</option>
+                <option value="pro">Pro</option>
+              </select>
+              <ChevronDown className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-slate-700">
+              Licensing Status
+            </label>
+            <div className="relative">
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full appearance-none rounded-xl border border-slate-200 py-2.5 pl-4 pr-10 text-sm text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition bg-white"
+              >
+                <option value="trial">Trial</option>
+                <option value="active">Active</option>
+                <option value="expired">Expired</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <ChevronDown className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            </div>
+          </div>
+
+          <div className="pt-4 flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60 transition-colors shadow-sm"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Save Target Modifications"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Subscriptions Page ─────────────────────────────────
 export default function SubscriptionRoute() {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
+  // Tracking active targets for multi-modal panels
   const [activeSubId, setActiveSubId] = useState(null);
+  const [upgradeTarget, setUpgradeTarget] = useState(null);
+  const [renewingId, setRenewingId] = useState(null);
 
   // Initial lookup of base subscriptions list
-  useEffect(() => {
+  const fetchSubscriptions = () => {
+    setLoading(true);
     api
       .get("/subscriptions/")
       .then((r) => setSubscriptions(r.data))
       .catch(console.error)
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchSubscriptions();
   }, []);
+
+  // Super Admin Instant 30-Day Renewal Pipeline
+  const handleRenewal = async (subId) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to extend this license context roadmap by another 30 days?",
+      )
+    )
+      return;
+    setRenewingId(subId);
+    try {
+      await api.put(`/subscriptions/${subId}/renewal`);
+      fetchSubscriptions();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fire continuous renewal strategy pipeline.");
+    } finally {
+      setRenewingId(null);
+    }
+  };
 
   // Soft fuzzy search handling across names and plans
   const filtered = subscriptions.filter(
     (sub) =>
-      sub.hostel_name.toLowerCase().includes(search.toLowerCase()) ||
-      sub.plan.toLowerCase().includes(search.toLowerCase()) ||
-      sub.status.toLowerCase().includes(search.toLowerCase()),
+      sub.hostel_name?.toLowerCase().includes(search.toLowerCase()) ||
+      sub.plan?.toLowerCase().includes(search.toLowerCase()) ||
+      sub.status?.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -321,7 +476,7 @@ export default function SubscriptionRoute() {
                     End Date
                   </th>
                   <th scope="col" className="px-6 py-4 text-right">
-                    Actions
+                    Super Admin Suite Actions
                   </th>
                 </tr>
               </thead>
@@ -354,13 +509,39 @@ export default function SubscriptionRoute() {
                       {formatDate(sub.end_date)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <button
-                        onClick={() => setActiveSubId(sub.id)}
-                        className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-sm"
-                      >
-                        Inspect
-                        <ExternalLink className="h-3 w-3" />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        {/* 30-Day Instant Renewal Action */}
+                        <button
+                          onClick={() => handleRenewal(sub.id)}
+                          disabled={renewingId === sub.id}
+                          className="inline-flex items-center gap-1 rounded-xl border border-emerald-200 px-3 py-1.5 text-xs font-medium text-emerald-600 bg-emerald-50/50 hover:bg-emerald-50 transition-all shadow-xs disabled:opacity-50"
+                          title="Instant 30-day continuous runtime provisioning cycle"
+                        >
+                          {renewingId === sub.id ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <RefreshCw className="h-3 w-3" />
+                          )}
+                          Renew 30d
+                        </button>
+
+                        {/* Upgrade Tier and Status Config Configurator */}
+                        <button
+                          onClick={() => setUpgradeTarget(sub)}
+                          className="inline-flex items-center gap-1 rounded-xl border border-indigo-200 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50/50 hover:bg-indigo-50 transition-all shadow-xs"
+                        >
+                          Upgrade/Status
+                        </button>
+
+                        {/* Inspect Analytics Context Overlay */}
+                        <button
+                          onClick={() => setActiveSubId(sub.id)}
+                          className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-sm"
+                        >
+                          Inspect
+                          <ExternalLink className="h-3 w-3" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -375,6 +556,15 @@ export default function SubscriptionRoute() {
         <SubscriptionDetailModal
           subscriptionId={activeSubId}
           onClose={() => setActiveSubId(null)}
+        />
+      )}
+
+      {/* Upgrade/Status Control Modal Component Integration */}
+      {upgradeTarget && (
+        <UpgradePlanModal
+          subscription={upgradeTarget}
+          onClose={() => setUpgradeTarget(null)}
+          onUpdated={fetchSubscriptions}
         />
       )}
     </div>
