@@ -1,6 +1,7 @@
 const { db } = require("../config/mysql");
 const bcrypt = require("bcrypt");
 const createAuditLog = require("../utils/auditLog");
+const createNotification = require("../utils/createNotifications");
 const createHostel = async (req, res) => {
   let connection = await db.promise().getConnection();
   try {
@@ -32,6 +33,12 @@ const createHostel = async (req, res) => {
     );
     await connection.commit();
     await createAuditLog(null, req.user.id, `Created hostel ${hostel_name}`);
+    await createNotification(
+      null,
+      req.user.id,
+      "New Hostel",
+      `${hostel_name} was registered`,
+    );
     return res.status(200).json({ message: "New hostel is created" });
   } catch (err) {
     if (connection) {
@@ -87,6 +94,12 @@ const createHostelAdmin = async (req, res) => {
         [name, email, hashedPass, hostel_id, role],
       );
     await createAuditLog(hostel_id, req.user.id, `Created admin ${name}`);
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Admin Created",
+      `Admin created for ${hostel_name}`,
+    );
     return res.status(200).json({ message: "New hostel admin is created" });
   } catch (err) {
     console.error(err);

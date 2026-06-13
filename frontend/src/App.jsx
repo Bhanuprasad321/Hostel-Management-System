@@ -12,6 +12,7 @@ import HostelsRoute from "./pages/HostelRoute";
 import AdminRoute from "./pages/AdminRoute";
 import SubscriptionRoute from "./pages/SubscriptionsRoute";
 import AllocationsRoute from "./pages/AllocationsRoute";
+import AuditLogs from "./pages/AuditLogs";
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +33,7 @@ function App() {
             <Route path="/rooms" element={<RoomRoute />} />
             <Route path="/subscriptions" element={<SubscriptionRoute />} />
             <Route path="/allocations" element={<AllocationsRoute />} />
+            <Route path="/audit-logs" element={<AuditLogs />}  />
           </Route>
         </Route>
       </Routes>

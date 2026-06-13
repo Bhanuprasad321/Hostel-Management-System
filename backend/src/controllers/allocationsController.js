@@ -1,5 +1,5 @@
 const { db } = require("../config/mysql");
-
+const createNotification = require("../utils/createNotifications");
 const createAuditLog = require("../utils/auditLog");
 const createAllocation = async (req, res) => {
   let connection = await db.promise().getConnection();
@@ -68,6 +68,12 @@ const createAllocation = async (req, res) => {
       hostel_id,
       req.user.id,
       `Allocated student ${student_id} to room ${room_id}`,
+    );
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Allocation Created",
+      `${name} was allocated to room ${room[0].room_number}`,
     );
     return res
       .status(200)
@@ -156,6 +162,12 @@ const vacateStudent = async (req, res) => {
       hostel_id,
       req.user.id,
       `Vacated student ${student_id}`,
+    );
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Student Vacated",
+      `${name} vacated the room ${room[0].room_number}`,
     );
     return res
       .status(200)

@@ -27,7 +27,8 @@ export default function AllocationsRoute() {
   const [studentId, setStudentId] = useState("");
   const [roomId, setRoomId] = useState("");
   const [formLoading, setFormLoading] = useState(false);
-
+  const [students, setStudents] = useState([]);
+  const [rooms, setRooms] = useState([]);
   // Allocation Details Drawer State
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsLoading, setDetailsLoading] = useState(false);
@@ -58,8 +59,21 @@ export default function AllocationsRoute() {
 
   useEffect(() => {
     fetchAllocations();
+    fetchFormData();
   }, []);
+  const fetchFormData = async () => {
+    try {
+      const [studentsRes, roomsRes] = await Promise.all([
+        api.get("/students"),
+        api.get("/rooms"),
+      ]);
 
+      setStudents(studentsRes.data);
+      setRooms(roomsRes.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   // Creation Handler
   const createAllocation = async (e) => {
     e.preventDefault();
@@ -167,14 +181,14 @@ export default function AllocationsRoute() {
             className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition shadow-sm disabled:opacity-60"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-            Sync Registry
+            Refresh
           </button>
           <button
             onClick={() => setOpenAddModal(true)}
             className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition shadow-sm"
           >
             <Plus className="h-4 w-4" />
-            Assign Room
+            Allocate Room
           </button>
         </div>
       </div>
@@ -260,10 +274,10 @@ export default function AllocationsRoute() {
               <thead className="bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <tr>
                   <th scope="col" className="px-6 py-4">
-                    Allocation Reference
+                    Allocation
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Target Space Asset
+                    Room Id
                   </th>
                   <th scope="col" className="px-6 py-4">
                     Tenant Identity ID
@@ -397,38 +411,55 @@ export default function AllocationsRoute() {
             {/* Form Content */}
             <form onSubmit={createAllocation} className="px-6 py-5 space-y-4">
               {/* Student System ID */}
+              {/* Student Selection */}
               <div className="space-y-1.5">
                 <label className="block text-sm font-medium text-slate-700">
-                  Student System ID
+                  Student
                 </label>
+
                 <div className="relative">
                   <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="number"
-                    placeholder="Enter registration tracking index e.g. 12"
+
+                  <select
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
                     required
-                  />
+                  >
+                    <option value="">Select Student</option>
+
+                    {students.map((student) => (
+                      <option key={student.id} value={student.id}>
+                        {student.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              {/* Target Room Assignment Identifier */}
+              {/* Room Selection */}
               <div className="space-y-1.5">
                 <label className="block text-sm font-medium text-slate-700">
-                  Target Room System ID
+                  Room
                 </label>
+
                 <div className="relative">
                   <BedDouble className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="number"
-                    placeholder="Enter structural asset system ID e.g. 6"
+
+                  <select
                     value={roomId}
                     onChange={(e) => setRoomId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
                     required
-                  />
+                  >
+                    <option value="">Select Room</option>
+
+                    {rooms.map((room) => (
+                      <option key={room.id} value={room.id}>
+                        Room {room.room_number}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

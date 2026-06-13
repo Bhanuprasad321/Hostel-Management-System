@@ -11,6 +11,7 @@ import {
   X,
   ChevronRight,
   CreditCard,
+  History,
 } from "lucide-react";
 
 const superAdminLinks = [
@@ -18,6 +19,7 @@ const superAdminLinks = [
   { to: "/hostels", label: "Hostels", icon: Building2 },
   { to: "/:id/admin/", label: "Admins", icon: Users },
   { to: "/subscriptions", label: "Subscriptions", icon: CreditCard },
+  { to: "/audit-logs", label: "Audit Logs", icon: History },
 ];
 
 const adminLinks = [

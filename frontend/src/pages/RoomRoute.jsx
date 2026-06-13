@@ -126,7 +126,7 @@ export default function RoomRoute() {
             className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition shadow-sm disabled:opacity-60"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-            Sync Units
+            Refresh
           </button>
           <button
             onClick={() => setOpenAddModal(true)}
@@ -146,7 +146,7 @@ export default function RoomRoute() {
           </div>
           <div>
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
-              Total Rooms Configured
+              Total Rooms
             </p>
             <h2 className="text-3xl font-bold text-slate-800 mt-0.5">
               {rooms.length}
@@ -204,7 +204,7 @@ export default function RoomRoute() {
               <thead className="bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <tr>
                   <th scope="col" className="px-6 py-4">
-                    Room Identifier
+                    Room Number
                   </th>
                   <th scope="col" className="px-6 py-4">
                     Max Capacity
@@ -230,9 +230,6 @@ export default function RoomRoute() {
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700 shadow-sm font-semibold text-xs group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-                            N° {room.room_number}
-                          </div>
                           <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">
                             Room {room.room_number}
                           </span>
@@ -293,10 +290,10 @@ export default function RoomRoute() {
                 </div>
                 <div>
                   <h2 className="text-[15px] font-semibold text-slate-800">
-                    Add Inventory Unit
+                    Add New Room
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Deploy a new room cluster inside the architecture
+                    Register a new room and define its occupancy capacity.
                   </p>
                 </div>
               </div>
@@ -365,7 +362,7 @@ export default function RoomRoute() {
                   ) : (
                     <Plus className="h-4 w-4" />
                   )}
-                  {formLoading ? "Provisioning..." : "Provision Room"}
+                  {formLoading ? "Creating..." : "Create Room"}
                 </button>
               </div>
             </form>
@@ -385,10 +382,10 @@ export default function RoomRoute() {
                 </div>
                 <div>
                   <h2 className="text-[15px] font-semibold text-slate-800">
-                    Room Blueprint Summary
+                    Room Summary
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Comprehensive capacity and structural breakdown
+                    capacity and tracking
                   </p>
                 </div>
               </div>
@@ -416,12 +413,9 @@ export default function RoomRoute() {
                 <div className="space-y-5">
                   {/* Summary Core Block */}
                   <div className="flex items-center gap-4 rounded-xl bg-slate-50 border border-slate-100 p-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold text-base shadow-md">
-                      N° {selectedRoom.roomNumber}
-                    </div>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-base font-bold text-slate-800 truncate">
-                        Room Asset {selectedRoom.roomNumber}
+                        Room {selectedRoom.room_number}
                       </h3>
                       <p className="text-xs text-slate-400 mt-0.5 font-medium">
                         Cluster Parent Module ID: #{selectedRoom.hostel_id}
@@ -433,7 +427,7 @@ export default function RoomRoute() {
                   <div className="space-y-3 pt-1">
                     <div className="flex justify-between items-center py-2 border-b border-slate-50">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Total Max Allocation Limits
+                        Total Max Allocation Limit
                       </span>
                       <span className="text-sm font-semibold text-slate-800">
                         {selectedRoom.capacity} Beds
@@ -447,15 +441,6 @@ export default function RoomRoute() {
                         className={`text-sm font-semibold ${selectedRoom.current_occupancy >= selectedRoom.capacity ? "text-rose-600" : "text-emerald-600"}`}
                       >
                         {selectedRoom.current_occupancy} Assigned
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                      <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider font-medium flex items-center gap-1">
-                        <LayoutGrid className="h-3 w-3 text-slate-400" />
-                        Hostel Installation Node
-                      </span>
-                      <span className="text-sm font-semibold text-slate-800">
-                        Node Cluster {selectedRoom.hostel_id}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2">

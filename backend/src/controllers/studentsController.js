@@ -1,6 +1,7 @@
 const { db } = require("../config/mysql");
 const bcrypt = require("bcrypt");
-const createAuditLog = require("../utils/auditLog")
+const createAuditLog = require("../utils/auditLog");
+const createNotification = require("../utils/createNotifications");
 const createStudent = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -24,6 +25,12 @@ const createStudent = async (req, res) => {
         [hostel_id, name, email, hashedPass, role],
       );
     await createAuditLog(hostel_id, req.user.id, `Created student ${name}`);
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Student Created",
+      `${name} was added to the hostel`,
+    );
     return res.status(200).json({ message: "New student is created" });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });

@@ -1,5 +1,5 @@
 const { db } = require("../config/mysql");
-
+const createNotification = require("../utils/createNotifications");
 const getAllSubscriptions = async (req, res) => {
   try {
     const [sub] = await db
@@ -75,7 +75,13 @@ const upgradePlan = async (req, res) => {
         message: "Subscription not found",
       });
     }
-    res
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Upgraded Subscription Plan",
+      `Subscription Plan successfully upgraded to ${plan}`,
+    );
+    return res
       .status(200)
       .json({ message: "Successfully updated the subscription plan" });
   } catch (err) {
@@ -100,6 +106,12 @@ const renewalPlan = async (req, res) => {
         "active",
         sub_id,
       ]);
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Subscription Renewed",
+      "Subscription renewed successfully for 30 days",
+    );
     return res.status(200).json({ message: "Successfully renewed the plan" });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
