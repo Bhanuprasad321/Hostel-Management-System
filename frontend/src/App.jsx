@@ -17,6 +17,9 @@ import NotificationsRoute from "./pages/NotificationsRoute";
 import SettingsRoute from "./pages/SettingsRoute";
 import AnalyticsSuperAdminRoute from "./pages/AnalyticsSuperAdminRoute";
 import AnalyticsAdminRoute from "./pages/AnalyticsAdminRoute";
+import StudentDashboard from "./pages/StudentDashboard";
+import AllocationDetails from "./pages/AllocationDetails";
+
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +35,8 @@ function App() {
             <Route path="/hostels" element={<HostelsRoute />} />
             <Route path="/:id/admin/" element={<AdminRoute />} />
             <Route path="/hostel-admin" element={<AdminDashboard />} />
+            <Route path="/student" element={<StudentDashboard />} />
+            <Route path="/allocation-details" element={<AllocationDetails />} />
             <Route path="/students" element={<Students />} />
             <Route path="/rooms" element={<RoomRoute />} />
             <Route path="/subscriptions" element={<SubscriptionRoute />} />

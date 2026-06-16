@@ -1,7 +1,6 @@
-
 const jwt = require("jsonwebtoken");
 const secretKey = "your-very-secure-secret";
-const {db} = require('../config/mysql');
+const { db } = require("../config/mysql");
 const protect = async (req, res, next) => {
   let token;
   if (
@@ -10,8 +9,13 @@ const protect = async (req, res, next) => {
   ) {
     try {
       token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token,secretKey);
-      const [rows] = await db.promise().query("SELECT id, name, email, role, hostel_id FROM users WHERE id = ?",[decoded.id]);
+      const decoded = jwt.verify(token, secretKey);
+      const [rows] = await db
+        .promise()
+        .query(
+          "SELECT id, name, email, role, hostel_id FROM users WHERE id = ?",
+          [decoded.id],
+        );
       req.user = rows[0];
       next();
     } catch (err) {
@@ -22,18 +26,23 @@ const protect = async (req, res, next) => {
   }
 };
 
-  const adminOnly = (req, res, next) => {
-    if (req.user.role === "admin") {
-      return next();
-    } else return res.status(403).json({ message: "Not authorized as admin" });
-  };
-
-
-const superAdminOnly = (req,res,next) => {
-  if (req.user.role=== "super_admin") {
+const adminOnly = (req, res, next) => {
+  if (req.user.role === "admin") {
     return next();
-  }
-  else return res.status(403).json({message: "Not authorized as super admin"});
-}
+  } else return res.status(403).json({ message: "Not authorized as admin" });
+};
 
-module.exports = { protect, adminOnly,superAdminOnly };
+const superAdminOnly = (req, res, next) => {
+  if (req.user.role === "super_admin") {
+    return next();
+  } else
+    return res.status(403).json({ message: "Not authorized as super admin" });
+};
+
+const studentOnly = (req, res, next) => {
+  if (req.user.role === "student") {
+    return next();
+  } else return res.status(403).json({ message: "Not authorized as student" });
+};
+
+module.exports = { protect, adminOnly, superAdminOnly, studentOnly };

@@ -30,6 +30,8 @@ const LoginPage = () => {
         navigate("/super-admin");
       } else if (user.role === "admin") {
         navigate("/hostel-admin");
+      } else if (user.role === "student") {
+        navigate("/student");
       }
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed");

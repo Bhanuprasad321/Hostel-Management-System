@@ -73,4 +73,35 @@ const getStudentDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-module.exports = { createStudent, getStudents, getStudentDetails };
+
+const getAllocationDetails = async (req, res) => {
+  try {
+    const student_id = req.user.id;
+
+    const [rows] = await db
+      .promise()
+      .query(
+        `SELECT a.id AS allocation_id, a.allocated_at AS allocation_date, a.status, r.room_number, r.capacity, r.current_occupancy FROM allocations a JOIN rooms r ON a.room_id = r.id WHERE a.student_id = ? AND a.status = 'active' LIMIT 1`,
+        [student_id],
+      );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        message: "No active allocation found",
+      });
+    }
+
+    return res.status(200).json(rows[0]);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+module.exports = {
+  createStudent,
+  getStudents,
+  getStudentDetails,
+  getAllocationDetails,
+};

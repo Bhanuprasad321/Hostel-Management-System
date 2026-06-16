@@ -15,6 +15,7 @@ import {
   Bell,
   Wrench,
   ChartColumn,
+  Home,
 } from "lucide-react";
 import api from "../services/api"; // Handled through your existing axios helper instance
 
@@ -39,6 +40,17 @@ const adminLinks = [
   { to: "/admin/analytics", label: "Analytics", icon: ChartColumn },
 ];
 
+const studentLinks = [
+  { to: "/student", label: "Dashboard", icon: LayoutDashboard },
+  {
+    to: "/allocation-details",
+    label: "Allocation Details",
+    icon: ClipboardList,
+  },
+  { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/settings", label: "Settings", icon: Wrench },
+];
+
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -48,7 +60,14 @@ export default function DashboardLayout() {
   const raw = localStorage.getItem("user");
   const user = raw ? JSON.parse(raw) : null;
   const role = user?.role;
-  const navLinks = role === "super_admin" ? superAdminLinks : adminLinks;
+
+  // Determine navigation vector link schemas dynamically based on role parameter strings
+  let navLinks = studentLinks;
+  if (role === "super_admin") {
+    navLinks = superAdminLinks;
+  } else if (role === "admin") {
+    navLinks = adminLinks;
+  }
 
   // Fetch unread count directly from your existing notification registry logic
   useEffect(() => {
@@ -88,6 +107,8 @@ export default function DashboardLayout() {
     if (path.includes("/rooms")) return "Rooms";
     if (path.includes("/allocations")) return "Allocations";
     if (path.includes("/notifications")) return "Notifications";
+    if (path.includes("/my-room")) return "My Room";
+    if (path.includes("/settings")) return "Settings";
     return "Dashboard";
   };
 
@@ -99,6 +120,12 @@ export default function DashboardLayout() {
         .toUpperCase()
         .slice(0, 2)
     : "U";
+
+  const getRoleLabel = () => {
+    if (role === "super_admin") return "Super Admin";
+    if (role === "admin") return "Hostel Admin";
+    return "Student";
+  };
 
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
@@ -115,7 +142,7 @@ export default function DashboardLayout() {
       {/* Role badge */}
       <div className="px-5 pt-4 pb-2">
         <span className="inline-block rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-medium text-indigo-600">
-          {role === "super_admin" ? "Super Admin" : "Hostel Admin"}
+          {getRoleLabel()}
         </span>
       </div>
 

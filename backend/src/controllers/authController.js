@@ -3,18 +3,6 @@ const jwt = require("jsonwebtoken");
 const generateToken = require("../utils/generateToken");
 const { db } = require("../config/mysql");
 
-const register = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-  } catch (err) {
-    console.error("Auth controller error:", err);
-
-    return res.status(500).json({
-      message: "Server error",
-    });
-  }
-};
-
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -85,17 +73,7 @@ const login = async (req, res) => {
   }
 };
 
-const handleUser = (req, res) => {
-  try {
-    console.log(req.user);
-    return res.status(200).json(req.user);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
 
 module.exports = {
   login,
-  handleUser,
 };

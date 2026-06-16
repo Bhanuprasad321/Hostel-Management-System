@@ -194,4 +194,55 @@ const getSuperAdminDashboardStats = async (req, res) => {
   }
 };
 
-module.exports = { getAdminDashbordStats, getSuperAdminDashboardStats };
+const getStudentDashboardStats = async (req, res) => {
+  try {
+    const [student] = await db.promise().query(
+      `SELECT u.name, h.hostel_name
+   FROM users u
+   JOIN hostels h ON u.hostel_id = h.id
+   WHERE u.id = ?`,
+      [req.user.id],
+    );
+    if (student.length === 0) {
+      return res.status(404).json({
+        message: "Student not found",
+      });
+    }
+    const [allocation] = await db.promise().query(
+      `SELECT
+      a.status,
+      r.room_number,
+      r.capacity,
+      r.current_occupancy
+   FROM allocations a
+   JOIN rooms r ON a.room_id = r.id
+   WHERE a.student_id = ?
+   AND a.status = 'active'`,
+      [req.user.id],
+    );
+    const [notifications] = await db.promise().query(
+      `SELECT COUNT(*) AS unread_notifications
+   FROM notifications
+   WHERE user_id = ?
+   AND is_read = FALSE`,
+      [req.user.id],
+    );
+    return res.status(200).json({
+      student_name: student[0].name,
+      hostel_name: student[0].hostel_name,
+      room_number: allocation[0]?.room_number || null,
+      allocation_status: allocation[0]?.status || "Not Allocated",
+      room_capacity: allocation[0]?.capacity || null,
+      current_occupancy: allocation[0]?.current_occupancy || null,
+      unread_notifications: notifications[0].unread_notifications,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = {
+  getAdminDashbordStats,
+  getSuperAdminDashboardStats,
+  getStudentDashboardStats,
+};
