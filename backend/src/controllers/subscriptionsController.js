@@ -49,6 +49,11 @@ const upgradePlan = async (req, res) => {
     const validStatuses = ["trial", "active", "expired", "cancelled"];
     const sub_id = req.params.id;
     const { plan, status } = req.body;
+    const [rows] = await db
+      .promise()
+      .query("SELECT hostel_id FROM subscriptions WHERE id = ?", [sub_id]);
+
+    const hostel_id = rows[0].hostel_id;
     if (!plan || !status) {
       return res.status(400).json({ message: "Both fields are required!" });
     }
@@ -76,7 +81,7 @@ const upgradePlan = async (req, res) => {
       });
     }
     await createNotification(
-      hostel_id,
+      hostel_id[0],
       req.user.id,
       "Upgraded Subscription Plan",
       `Subscription Plan successfully upgraded to ${plan}`,
@@ -85,6 +90,7 @@ const upgradePlan = async (req, res) => {
       .status(200)
       .json({ message: "Successfully updated the subscription plan" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "Internal server error " });
   }
 };
@@ -95,6 +101,11 @@ const renewalPlan = async (req, res) => {
     const [sub] = await db
       .promise()
       .query("SELECT * FROM subscriptions WHERE id = ?", [sub_id]);
+    const [rows] = await db
+      .promise()
+      .query("SELECT hostel_id FROM subscriptions WHERE id = ?", [sub_id]);
+
+    const hostel_id = rows[0].hostel_id;
     if (sub.length === 0)
       return res.status(404).json({ message: "Subscription not found" });
     const newEndDate = new Date(sub[0].end_date);
@@ -114,6 +125,7 @@ const renewalPlan = async (req, res) => {
     );
     return res.status(200).json({ message: "Successfully renewed the plan" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

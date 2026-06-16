@@ -12,6 +12,8 @@ const dashBoardRoutes = require("./routes/dashBoardRoutes");
 const subscriptionsRoutes = require("./routes/subscriptionsRoutes");
 const auditLogsRoutes = require("./routes/auditLogsRoutes");
 const notificationsRoutes = require("./routes/notificationsRoutes");
+const settingsRoutes = require("./routes/settingsRoutes");
+const complaintsRoutes = require("./routes/complaintsRoutes");
 
 const cors = require("cors");
 
@@ -33,8 +35,9 @@ app.use("/api/allocations", allocationRoutes);
 app.use("/api/dashboard", dashBoardRoutes);
 app.use("/api/subscriptions", subscriptionsRoutes);
 app.use("/api/audit-logs", auditLogsRoutes);
-app.use("/api/notifications",notificationsRoutes);
-
+app.use("/api/notifications", notificationsRoutes);
+app.use("/api/settings", settingsRoutes);
+app.use("/api/complaints", complaintsRoutes);
 
 app.listen(2000, () => {
   console.log(`App is running at port ${2000}`);

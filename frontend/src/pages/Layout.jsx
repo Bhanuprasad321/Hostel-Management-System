@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -12,7 +12,11 @@ import {
   ChevronRight,
   CreditCard,
   History,
+  Bell,
+  Wrench,
+  ChartColumn,
 } from "lucide-react";
+import api from "../services/api"; // Handled through your existing axios helper instance
 
 const superAdminLinks = [
   { to: "/super-admin", label: "Dashboard", icon: LayoutDashboard },
@@ -20,6 +24,9 @@ const superAdminLinks = [
   { to: "/:id/admin/", label: "Admins", icon: Users },
   { to: "/subscriptions", label: "Subscriptions", icon: CreditCard },
   { to: "/audit-logs", label: "Audit Logs", icon: History },
+  { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/settings", label: "Settings", icon: Wrench },
+  { to: "/super-admin/analytics", label: "Analytics", icon: ChartColumn },
 ];
 
 const adminLinks = [
@@ -27,10 +34,14 @@ const adminLinks = [
   { to: "/students", label: "Students", icon: Users },
   { to: "/rooms", label: "Rooms", icon: BedDouble },
   { to: "/allocations", label: "Allocations", icon: ClipboardList },
+  { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/settings", label: "Settings", icon: Wrench },
+  { to: "/admin/analytics", label: "Analytics", icon: ChartColumn },
 ];
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -38,6 +49,29 @@ export default function DashboardLayout() {
   const user = raw ? JSON.parse(raw) : null;
   const role = user?.role;
   const navLinks = role === "super_admin" ? superAdminLinks : adminLinks;
+
+  // Fetch unread count directly from your existing notification registry logic
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await api.get("/notifications");
+        if (res.data && Array.isArray(res.data)) {
+          const unread = res.data.filter((item) => item.is_read === 0).length;
+          setUnreadCount(unread);
+        }
+      } catch (err) {
+        console.error(
+          "Failed to sync navigation unread badge parameters:",
+          err,
+        );
+      }
+    };
+
+    fetchUnreadCount();
+    // Optional: Setup a poll every 60 seconds to keep counts refreshed silently
+    const interval = setInterval(fetchUnreadCount, 60000);
+    return () => clearInterval(interval);
+  }, [location.pathname]); // Re-evaluate when navigating routes (e.g., leaving notifications page)
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -53,6 +87,7 @@ export default function DashboardLayout() {
     if (path.includes("/students")) return "Students";
     if (path.includes("/rooms")) return "Rooms";
     if (path.includes("/allocations")) return "Allocations";
+    if (path.includes("/notifications")) return "Notifications";
     return "Dashboard";
   };
 
@@ -192,7 +227,21 @@ export default function DashboardLayout() {
           </div>
 
           {/* Right Utility Navigation Node */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3.5">
+            {/* Interactive Notification Bell trigger Layout Component */}
+            <button
+              onClick={() => navigate("/notifications")}
+              className="relative p-2 rounded-full text-slate-400 hover:bg-slate-50 hover:text-indigo-600 transition-all border border-transparent hover:border-slate-100 shadow-2xs"
+              aria-label="View notifications"
+            >
+              <Bell className="h-4.5 w-4.5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-extrabold text-white ring-2 ring-white animate-fade-in">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
+            </button>
+
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 text-xs font-semibold text-indigo-600 border border-indigo-100/40 shadow-xs">
               {initials}
             </div>

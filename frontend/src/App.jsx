@@ -13,11 +13,14 @@ import AdminRoute from "./pages/AdminRoute";
 import SubscriptionRoute from "./pages/SubscriptionsRoute";
 import AllocationsRoute from "./pages/AllocationsRoute";
 import AuditLogs from "./pages/AuditLogs";
+import NotificationsRoute from "./pages/NotificationsRoute";
+import SettingsRoute from "./pages/SettingsRoute";
+import AnalyticsSuperAdminRoute from "./pages/AnalyticsSuperAdminRoute";
+import AnalyticsAdminRoute from "./pages/AnalyticsAdminRoute";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        
         {/* Public routes — no layout */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -33,7 +36,14 @@ function App() {
             <Route path="/rooms" element={<RoomRoute />} />
             <Route path="/subscriptions" element={<SubscriptionRoute />} />
             <Route path="/allocations" element={<AllocationsRoute />} />
-            <Route path="/audit-logs" element={<AuditLogs />}  />
+            <Route path="/audit-logs" element={<AuditLogs />} />
+            <Route path="/notifications" element={<NotificationsRoute />} />
+            <Route path="/settings" element={<SettingsRoute />} />
+            <Route
+              path="/super-admin/analytics"
+              element={<AnalyticsSuperAdminRoute />}
+            />
+            <Route path="/admin/analytics" element={<AnalyticsAdminRoute />} />
           </Route>
         </Route>
       </Routes>

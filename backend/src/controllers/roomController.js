@@ -29,8 +29,8 @@ const createRoom = async (req, res) => {
     await createNotification(
       hostel_id,
       req.user.id,
-      "Room Allocation",
-      `${student.name} assigned to Room ${room.room_number}`,
+      "Room Creation",
+      `New Room ${room_number} is created`,
     );
     return res.status(200).json({ message: "New room is created" });
   } catch (err) {

@@ -73,7 +73,7 @@ const createAllocation = async (req, res) => {
       hostel_id,
       req.user.id,
       "Allocation Created",
-      `${name} was allocated to room ${room[0].room_number}`,
+      `${student[0].name} was allocated to room ${room[0].room_number}`,
     );
     return res
       .status(200)

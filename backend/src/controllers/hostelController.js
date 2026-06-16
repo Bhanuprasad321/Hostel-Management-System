@@ -98,7 +98,7 @@ const createHostelAdmin = async (req, res) => {
       hostel_id,
       req.user.id,
       "Admin Created",
-      `Admin created for ${hostel_name}`,
+      `Admin created for ${name}`,
     );
     return res.status(200).json({ message: "New hostel admin is created" });
   } catch (err) {

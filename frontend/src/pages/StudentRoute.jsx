@@ -149,14 +149,14 @@ export default function Students() {
             className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition shadow-sm disabled:opacity-60"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-            Sync Index
+            Refresh
           </button>
           <button
             onClick={() => setOpenAddModal(true)}
             className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition shadow-sm"
           >
             <Plus className="h-4 w-4" />
-            Add Student
+            Add New Student
           </button>
         </div>
       </div>

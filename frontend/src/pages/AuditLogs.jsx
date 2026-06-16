@@ -263,7 +263,7 @@ export default function AuditLogs() {
                           <Building2 className="h-3.5 w-3.5" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700">
-                          {log.hostel_name || "Platform Global Scope"}
+                          {log.hostel_name || "-"}
                         </span>
                       </div>
                     </td>
