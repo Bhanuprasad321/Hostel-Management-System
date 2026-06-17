@@ -67,6 +67,14 @@ const updateComplaintStatus = async (req, res) => {
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid update status" });
     }
+    const [complaint] = await db
+      .promise()
+      .query("SELECT student_id, category FROM complaints WHERE id = ?", [id]);
+    if (complaint.length === 0) {
+      return res.status(404).json({
+        message: "Complaint not found",
+      });
+    }
     const [result] = await db
       .promise()
       .query(
@@ -86,7 +94,7 @@ const updateComplaintStatus = async (req, res) => {
       );
       await createNotification(
         req.user.hostel_id,
-        req.user.id,
+        complaint[0].student_id,
         "Complaint Resolved",
         `Complaint #${id} marked as resolved`,
       );
@@ -99,4 +107,28 @@ const updateComplaintStatus = async (req, res) => {
   }
 };
 
-module.exports = { createComplaint, getComplaints, updateComplaintStatus };
+const getMyComplaints = async (req, res) => {
+  try {
+    const student_id = req.user.id;
+
+    const [complaints] = await db.promise().query(
+      `SELECT id,category,
+description,status,created_at FROM complaints WHERE student_id = ? ORDER BY created_at DESC`,
+      [student_id],
+    );
+
+    return res.status(200).json(complaints);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = {
+  createComplaint,
+  getComplaints,
+  updateComplaintStatus,
+  getMyComplaints,
+};

@@ -14,6 +14,7 @@ const auditLogsRoutes = require("./routes/auditLogsRoutes");
 const notificationsRoutes = require("./routes/notificationsRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
 const complaintsRoutes = require("./routes/complaintsRoutes");
+const noticeRoutes = require("./routes/noticeRoutes");
 
 const cors = require("cors");
 
@@ -38,6 +39,7 @@ app.use("/api/audit-logs", auditLogsRoutes);
 app.use("/api/notifications", notificationsRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/complaints", complaintsRoutes);
+app.use("/api/notices", noticeRoutes);
 
 app.listen(2000, () => {
   console.log(`App is running at port ${2000}`);

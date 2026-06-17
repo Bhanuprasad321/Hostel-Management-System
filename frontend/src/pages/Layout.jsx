@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
+  MessageSquareWarning,
   LayoutDashboard,
   Building2,
   Users,
@@ -15,6 +16,7 @@ import {
   Bell,
   Wrench,
   ChartColumn,
+  AlertCircle,
   Home,
 } from "lucide-react";
 import api from "../services/api"; // Handled through your existing axios helper instance
@@ -38,6 +40,8 @@ const adminLinks = [
   { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/settings", label: "Settings", icon: Wrench },
   { to: "/admin/analytics", label: "Analytics", icon: ChartColumn },
+  { to: "/notices", label: "Notices", icon: AlertCircle },
+  { to: "/complaints", label: "Complaints", icon: MessageSquareWarning },
 ];
 
 const studentLinks = [
@@ -48,6 +52,8 @@ const studentLinks = [
     icon: ClipboardList,
   },
   { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/notices", label: "Notices", icon: AlertCircle },
+  { to: "/complaints", label: "Complaints", icon: MessageSquareWarning },
   { to: "/settings", label: "Settings", icon: Wrench },
 ];
 
