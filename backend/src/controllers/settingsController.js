@@ -4,18 +4,25 @@ const createAuditLog = require("../utils/auditLog");
 const getProfile = async (req, res) => {
   try {
     const user_id = req.user.id;
-    const [row] = await db
-      .promise()
-      .query("SELECT * FROM users WHERE id = ?", [user_id]);
-    if (row.length === 0) {
-      return res.status(404).json({ message: "No user found with Id" });
-    }
-    const name = row[0].name;
-    const email = row[0].email;
 
-    return res.status(200).json({ name, email });
+    const [rows] = await db.promise().query(
+      `SELECT u.name, u.email, u.role,
+          u.created_at, h.hostel_name FROM users u LEFT JOIN hostels h ON u.hostel_id = h.id WHERE u.id = ?`,
+      [user_id],
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json(rows[0]);
   } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
 

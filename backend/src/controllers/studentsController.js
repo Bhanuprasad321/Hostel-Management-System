@@ -49,6 +49,7 @@ const getStudents = async (req, res) => {
       );
     return res.status(200).json(students);
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -99,9 +100,30 @@ const getAllocationDetails = async (req, res) => {
     });
   }
 };
+
+const getStudentsDropdown = async (req, res) => {
+  try {
+    const hostel_id = req.user.hostel_id;
+
+    const [students] = await db.promise().query(
+      `SELECT u.id, u.name, r.room_number FROM users u LEFT JOIN allocations a ON u.id = a.student_id
+ AND a.status = 'active' LEFT JOIN rooms r ON a.room_id = r.id WHERE u.hostel_id = ? AND u.role = 'student' ORDER BY u.name`,
+      [hostel_id],
+    );
+
+    return res.status(200).json(students);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   createStudent,
   getStudents,
   getStudentDetails,
   getAllocationDetails,
+  getStudentsDropdown,
 };

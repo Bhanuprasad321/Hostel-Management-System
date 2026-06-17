@@ -38,6 +38,7 @@ const adminLinks = [
   { to: "/rooms", label: "Rooms", icon: BedDouble },
   { to: "/allocations", label: "Allocations", icon: ClipboardList },
   { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/visitors", label: "Visitors Log", icon: Users },
   { to: "/settings", label: "Settings", icon: Wrench },
   { to: "/admin/analytics", label: "Analytics", icon: ChartColumn },
   { to: "/notices", label: "Notices", icon: AlertCircle },
@@ -186,15 +187,18 @@ export default function DashboardLayout() {
 
       {/* User + logout */}
       <div className="border-t border-slate-100 px-4 py-4">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700">
+        <div
+          className="flex items-center gap-3 mb-3 p-2 rounded-xl transition-all duration-200 hover:bg-slate-100/70 active:bg-slate-200/50 cursor-pointer group"
+          onClick={() => navigate("/profile")}
+        >
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-sm font-black text-indigo-700 transition-transform duration-200 group-hover:scale-105 shadow-3xs">
             {initials}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-slate-800">
+            <p className="truncate text-sm font-bold text-slate-800 tracking-tight transition-colors duration-200 group-hover:text-indigo-600">
               {user?.name ?? "User"}
             </p>
-            <p className="truncate text-xs text-slate-400">
+            <p className="truncate text-xs font-medium text-slate-400">
               {user?.email ?? ""}
             </p>
           </div>
@@ -264,18 +268,24 @@ export default function DashboardLayout() {
             {/* Interactive Notification Bell trigger Layout Component */}
             <button
               onClick={() => navigate("/notifications")}
-              className="relative p-2 rounded-full text-slate-400 hover:bg-slate-50 hover:text-indigo-600 transition-all border border-transparent hover:border-slate-100 shadow-2xs"
+              className="relative p-2 rounded-xl text-slate-400 bg-white hover:bg-indigo-50/50 hover:text-indigo-600 border border-slate-100 hover:border-indigo-200/60 shadow-3xs transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
               aria-label="View notifications"
             >
-              <Bell className="h-4.5 w-4.5" />
+              <Bell className="h-4.5 w-4.5 transition-transform duration-200 group-hover:rotate-12" />
+
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-extrabold text-white ring-2 ring-white animate-fade-in">
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-lg bg-red-500 px-1 text-[9px] font-black text-white ring-2 ring-white shadow-3xs animate-fade-in">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}
             </button>
 
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 text-xs font-semibold text-indigo-600 border border-indigo-100/40 shadow-xs">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-xs font-black text-indigo-600 border border-indigo-100/40 shadow-3xs cursor-pointer transition-all duration-200 hover:scale-105 hover:bg-indigo-100 hover:border-indigo-300 active:scale-95"
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
               {initials}
             </div>
           </div>

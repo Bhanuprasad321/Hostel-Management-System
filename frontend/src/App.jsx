@@ -21,6 +21,9 @@ import StudentDashboard from "./pages/StudentDashboard";
 import AllocationDetails from "./pages/AllocationDetails";
 import NoticesPage from "./pages/NoticesPage";
 import ComplaintsPage from "./pages/ComplaintsPage";
+import ProfilePage from "./pages/ProfilePage";
+import VisitorsPage from "./pages/VisitorsPage";
+
 function App() {
   return (
     <BrowserRouter>
@@ -47,6 +50,8 @@ function App() {
             <Route path="/settings" element={<SettingsRoute />} />
             <Route path="/notices" element={<NoticesPage />} />
             <Route path="/complaints" element={<ComplaintsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/visitors" element={<VisitorsPage />} />
             <Route
               path="/super-admin/analytics"
               element={<AnalyticsSuperAdminRoute />}
