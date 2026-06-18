@@ -70,12 +70,11 @@ export default function AllocationDetails() {
     <div className="space-y-8 bg-slate-50/40 p-1 min-h-screen antialiased w-full">
       {/* ─── HEADER TITLE COMPONENT ─── */}
       <div className="border-b border-slate-100 pb-5">
-        <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-          Living Space Hub
+        <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          My Room Details
         </h2>
-        <p className="text-xs font-bold text-indigo-600 tracking-wide uppercase mt-0.5">
-          View and inspect parameters governing your authorized hostel room
-          assignment
+        <p className="text-xs font-bold text-slate-500 tracking-wide mt-0.5">
+          View your room allocation and occupancy details
         </p>
       </div>
 
@@ -101,12 +100,12 @@ export default function AllocationDetails() {
           <div className="lg:col-span-2 bg-white border border-slate-100 p-6 rounded-2xl shadow-xs transition-all duration-300 hover:border-indigo-400/50">
             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 mb-6">
               <Home className="h-4 w-4 text-indigo-500" />
-              <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider">
-                Authorized Living Unit Allocation Metadata
+              <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                Room Allocation Information
               </h3>
             </div>
 
-            {/* Matrix Parameters Breakdown */}
+            {/* Matrix Parameters Brea`kdown */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Variable field: Room Designator ID */}
               <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50/60 border border-slate-100 transition hover:bg-slate-100/40">
@@ -115,9 +114,9 @@ export default function AllocationDetails() {
                 </div>
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Assigned Room
+                    Room Number
                   </p>
-                  <p className="text-base font-black text-slate-800 tracking-tight">
+                  <p className="text-[18px] font-bold text-slate-800 tracking-tight">
                     Room {allocation.room_number}
                   </p>
                 </div>
@@ -130,9 +129,9 @@ export default function AllocationDetails() {
                 </div>
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Allocation ID Token
+                    Allocation ID
                   </p>
-                  <p className="text-sm font-black text-slate-700 tracking-tight font-mono">
+                  <p className="text-[18px] font-bold text-slate-700 tracking-tight font-mono">
                     #{allocation.allocation_id}
                   </p>
                 </div>
@@ -145,7 +144,7 @@ export default function AllocationDetails() {
                 </div>
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Activation Date Record
+                    Allocated On
                   </p>
                   <p className="text-sm font-black text-slate-800 tracking-tight">
                     {formatDate(allocation.allocation_date)}
@@ -160,7 +159,7 @@ export default function AllocationDetails() {
                 </div>
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Lifecycle State Monitor
+                    Allocation Status
                   </p>
                   <div>
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black rounded bg-emerald-50 border border-emerald-100 text-emerald-700 uppercase tracking-wider">
@@ -178,8 +177,8 @@ export default function AllocationDetails() {
             <div className="w-full space-y-4">
               <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                 <Users2 className="h-4 w-4 text-indigo-500" />
-                <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider">
-                  Spatial Load Density Tracking
+                <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                  Room Occupancy
                 </h3>
               </div>
 
@@ -187,7 +186,7 @@ export default function AllocationDetails() {
               <div className="grid grid-cols-2 gap-3 text-center">
                 <div className="p-3 bg-slate-50/60 border border-slate-100 rounded-xl">
                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                    Current Occupants
+                    Current Occupancy
                   </p>
                   <p className="text-2xl font-black text-slate-800 tracking-tight mt-0.5">
                     {allocation.current_occupancy}
@@ -195,7 +194,7 @@ export default function AllocationDetails() {
                 </div>
                 <div className="p-3 bg-slate-50/60 border border-slate-100 rounded-xl">
                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                    Total Bed Capacity
+                    Room Capacity
                   </p>
                   <p className="text-2xl font-black text-slate-800 tracking-tight mt-0.5">
                     {allocation.capacity}
@@ -207,14 +206,14 @@ export default function AllocationDetails() {
               <div className="space-y-1.5 pt-2">
                 <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wide">
                   <span className="text-slate-400">
-                    Total Structural Loading
+                    Occupancy Rate
                   </span>
                   <span className="text-indigo-600 font-extrabold">
                     {Math.round(
                       (allocation.current_occupancy / allocation.capacity) *
                         100,
                     )}
-                    % Used
+                    % Occupied
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">

@@ -42,7 +42,9 @@ const superAdminOnly = (req, res, next) => {
 const studentOnly = (req, res, next) => {
   if (req.user.role === "student") {
     return next();
-  } else return res.status(403).json({ message: "Not authorized as student" });
+  } else {
+    return res.status(403).json({ message: "Not authorized as student" });
+  }
 };
 
 module.exports = { protect, adminOnly, superAdminOnly, studentOnly };

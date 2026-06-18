@@ -12,6 +12,7 @@ import {
   CalendarDays,
   DoorOpen,
   LayoutGrid,
+  Eye,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -113,10 +114,9 @@ export default function RoomRoute() {
       {/* ─── Page Header Section ─── */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Room Inventory</h2>
+          <h2 className="text-2xl font-bold text-slate-800">Rooms</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Configure room capacities, track occupancy metrics, and manage
-            installations
+            Manage hostel rooms and occupancy
           </p>
         </div>
         <div className="flex items-center gap-3 self-start">
@@ -165,11 +165,11 @@ export default function RoomRoute() {
       {/* ─── Control Utility Filter Row ─── */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-slate-500">
-          Filtered Results:{" "}
+          Total Rooms:{" "}
           <span className="font-semibold text-slate-700">
             {filteredRooms.length}
           </span>{" "}
-          spaces
+          Rooms
         </p>
         <div className="relative max-w-xs w-full">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -207,10 +207,10 @@ export default function RoomRoute() {
                     Room Number
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Max Capacity
+                    Capacity
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Live Occupancy Status
+                    Occupancy
                   </th>
                   <th scope="col" className="px-6 py-4 text-right">
                     Actions
@@ -265,8 +265,8 @@ export default function RoomRoute() {
                           onClick={() => openRoomDetails(room.room_number)}
                           className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-sm"
                         >
-                          Inspect
-                          <ExternalLink className="h-3 w-3" />
+                          <Eye className="h-3 w-3" />
+                          View
                         </button>
                       </td>
                     </tr>
@@ -290,10 +290,10 @@ export default function RoomRoute() {
                 </div>
                 <div>
                   <h2 className="text-[15px] font-semibold text-slate-800">
-                    Add New Room
+                    Add Room
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Register a new room and define its occupancy capacity.
+                    Create a new room for your hostel
                   </p>
                 </div>
               </div>
@@ -328,7 +328,7 @@ export default function RoomRoute() {
               {/* Capacity */}
               <div className="space-y-1.5">
                 <label className="block text-sm font-medium text-slate-700">
-                  Total Bed Capacity
+                  Room Capacity
                 </label>
                 <div className="relative">
                   <Users2 className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -382,10 +382,10 @@ export default function RoomRoute() {
                 </div>
                 <div>
                   <h2 className="text-[15px] font-semibold text-slate-800">
-                    Room Summary
+                    Room Details
                   </h2>
                   <p className="text-xs text-slate-400">
-                    capacity and tracking
+                    Room information and occupancy
                   </p>
                 </div>
               </div>
@@ -406,7 +406,7 @@ export default function RoomRoute() {
                 <div className="flex flex-col items-center justify-center py-12 space-y-3">
                   <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
                   <p className="text-xs text-slate-400">
-                    Querying unit matrix entities...
+                    Loading the Room data...
                   </p>
                 </div>
               ) : selectedRoom ? (
@@ -415,10 +415,11 @@ export default function RoomRoute() {
                   <div className="flex items-center gap-4 rounded-xl bg-slate-50 border border-slate-100 p-4">
                     <div className="min-w-0 flex-1">
                       <h3 className="text-base font-bold text-slate-800 truncate">
-                        Room {selectedRoom.room_number}
+                        Room {selectedRoom[0].room_number}
+                        {console.log(selectedRoom)}
                       </h3>
                       <p className="text-xs text-slate-400 mt-0.5 font-medium">
-                        Cluster Parent Module ID: #{selectedRoom.hostel_id}
+                        Room ID: #{selectedRoom[0].hostel_id}
                       </p>
                     </div>
                   </div>
@@ -427,32 +428,35 @@ export default function RoomRoute() {
                   <div className="space-y-3 pt-1">
                     <div className="flex justify-between items-center py-2 border-b border-slate-50">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Total Max Allocation Limit
+                        Room Capacity
                       </span>
                       <span className="text-sm font-semibold text-slate-800">
-                        {selectedRoom.capacity} Beds
+                        {selectedRoom[0].capacity} Beds
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-slate-50">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Current Live Occupancy
+                        Current Occupancy
                       </span>
                       <span
-                        className={`text-sm font-semibold ${selectedRoom.current_occupancy >= selectedRoom.capacity ? "text-rose-600" : "text-emerald-600"}`}
+                        className={`text-sm font-semibold ${selectedRoom[0].current_occupancy >= selectedRoom[0].capacity ? "text-rose-600" : "text-emerald-600"}`}
                       >
-                        {selectedRoom.current_occupancy} Assigned
+                        {selectedRoom[0].current_occupancy} Assigned
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider font-medium flex items-center gap-1">
                         <CalendarDays className="h-3 w-3 text-slate-400" />
-                        Initialization Date
+                        Created On
                       </span>
                       <span className="text-sm font-medium text-slate-700">
-                        {new Date(selectedRoom.created_at).toLocaleDateString(
-                          undefined,
-                          { year: "numeric", month: "long", day: "numeric" },
-                        )}
+                        {new Date(
+                          selectedRoom[0].created_at,
+                        ).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
                       </span>
                     </div>
                   </div>
@@ -467,7 +471,7 @@ export default function RoomRoute() {
                       }}
                       className="w-full rounded-xl border border-slate-200 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
                     >
-                      Dismiss Layout View
+                      Close
                     </button>
                   </div>
                 </div>

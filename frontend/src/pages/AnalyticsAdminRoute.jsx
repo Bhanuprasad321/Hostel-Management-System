@@ -190,11 +190,10 @@ export default function AnalyticsAdminRoute() {
       {/* Structural Title Header Block */}
       <div className="border-b border-slate-100 pb-5">
         <h2 className="text-xl font-bold text-slate-800 tracking-tight">
-          Hostel Management Analytics
+          Hostel Analytics
         </h2>
         <p className="text-xs text-slate-400 mt-0.5 font-medium">
-          Monitor room allocation limits, occupancy ratios, and structural data
-          profiles
+          View hostel occupancy, room availability, and student distribution.
         </p>
       </div>
 
@@ -273,11 +272,11 @@ export default function AnalyticsAdminRoute() {
           <div className="flex items-center gap-2 pb-3 border-b border-slate-50 mb-4">
             <BedDouble className="h-4 w-4 text-orange-500" />
             <div>
-              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Bed Allocation Occupancy
+              <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                Bed Occupancy
               </h4>
-              <p className="text-[10px] text-slate-400 font-medium">
-                Live metrics representing global structural inventory limits
+              <p className="text-[11px] text-slate-400 font-medium">
+                Occupied and available beds
               </p>
             </div>
           </div>
@@ -291,11 +290,11 @@ export default function AnalyticsAdminRoute() {
           <div className="flex items-center gap-2 pb-3 border-b border-slate-50 mb-4">
             <ClipboardList className="h-4 w-4 text-indigo-500" />
             <div>
-              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Allocation Record Turnover
+              <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                Allocation Status
               </h4>
-              <p className="text-[10px] text-slate-400 font-medium">
-                Proportion tracking active leases against finalized departures
+              <p className="text-[11px] text-slate-400 font-medium">
+                Active and vacated allocations
               </p>
             </div>
           </div>
@@ -310,10 +309,10 @@ export default function AnalyticsAdminRoute() {
             <TrendingUp className="h-4 w-4 text-red-500" />
             <div>
               <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Most Occupied Rooms
+                Room Occupancy
               </h4>
               <p className="text-[10px] text-slate-400 font-medium">
-                Identifies configurations reaching critical operational limits
+                Occupancy percentage by room
               </p>
             </div>
           </div>
@@ -353,11 +352,10 @@ export default function AnalyticsAdminRoute() {
             <BarChart3 className="h-4 w-4 text-cyan-500" />
             <div>
               <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Room Inhabitant Distribution
+                Students per Room
               </h4>
               <p className="text-[10px] text-slate-400 font-medium">
-                Operational visualization showing localized client cluster
-                spreads
+                Distribution of students across rooms
               </p>
             </div>
           </div>

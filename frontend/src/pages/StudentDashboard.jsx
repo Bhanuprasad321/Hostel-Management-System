@@ -88,11 +88,11 @@ export default function StudentDashboard() {
     <div className="space-y-8 bg-slate-50/40 p-1 min-h-screen antialiased w-full">
       {/* ─── GREETING HEADER ─── */}
       <div className="border-b border-slate-100 pb-5">
-        <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
           Hello, {stats.student_name} <span>👋</span>
         </h2>
-        <p className="text-xs font-bold text-indigo-600 tracking-wide uppercase mt-0.5">
-          Welcome back to {stats.hostel_name}
+        <p className="text-xs font-bold text-indigo-600 tracking-wide mt-0.5">
+          Welcome back to {stats.hostel_name} hostel
         </p>
       </div>
 
@@ -106,7 +106,7 @@ export default function StudentDashboard() {
             </span>
             <Home className="h-4 w-4 text-indigo-500" />
           </div>
-          <h3 className="text-2xl font-black text-slate-800 tracking-tight mt-4">
+          <h3 className="text-2xl font-bold text-slate-800 tracking-tight mt-4">
             {hasRoom ? `Room ${stats.room_number}` : "Unassigned"}
           </h3>
         </div>
@@ -115,13 +115,13 @@ export default function StudentDashboard() {
         <div className="bg-white border border-slate-100 p-6 rounded-2xl shadow-xs flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:border-indigo-400/60 hover:shadow-md">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Status
+              Allocation Status
             </span>
             <Activity className="h-4 w-4 text-emerald-500" />
           </div>
           <div className="mt-4">
             <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-black rounded-lg uppercase tracking-wider ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold rounded-lg uppercase tracking-wider ${
                 stats.allocation_status.toLowerCase() === "active"
                   ? "bg-emerald-50 border border-emerald-100 text-emerald-700"
                   : "bg-amber-50 border border-amber-100 text-amber-700"
@@ -141,7 +141,7 @@ export default function StudentDashboard() {
             </span>
             <Building2 className="h-4 w-4 text-blue-500" />
           </div>
-          <h3 className="text-base font-black text-slate-700 tracking-tight mt-4 line-clamp-1">
+          <h3 className="text-2xl font-bold text-slate-700 tracking-tight mt-4 line-clamp-1">
             {stats.hostel_name}
           </h3>
         </div>
@@ -150,7 +150,7 @@ export default function StudentDashboard() {
         <div className="bg-white border border-slate-100 p-6 rounded-2xl shadow-xs flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:border-indigo-400/60 hover:shadow-md">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Notifications
+              Unread Notifications
             </span>
             <div className="relative">
               <Bell className="h-4 w-4 text-amber-500" />
@@ -174,8 +174,8 @@ export default function StudentDashboard() {
         <div className="md:col-span-2 bg-white border border-slate-100 p-6 rounded-2xl shadow-xs transition-all duration-300 hover:border-indigo-400/60">
           <div className="flex items-center gap-2 pb-3 border-b border-slate-100 mb-5">
             <Home className="h-4 w-4 text-indigo-500" />
-            <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider">
-              My Room Details
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Room Details
             </h3>
           </div>
 
@@ -250,7 +250,7 @@ export default function StudentDashboard() {
           <div className="space-y-4 w-full">
             <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
               <Bell className="h-4 w-4 text-indigo-500" />
-              <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider">
+              <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Recent Notifications
               </h3>
             </div>
@@ -273,7 +273,7 @@ export default function StudentDashboard() {
           <div className="pt-4 border-t border-slate-100 mt-4">
             <a
               href="/notifications"
-              className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 py-2 text-xs font-black text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-2xs"
+              className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 py-2 text-xs font-bold text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-2xs"
             >
               View All
               <ArrowUpRight className="h-3 w-3 stroke-[2.5]" />

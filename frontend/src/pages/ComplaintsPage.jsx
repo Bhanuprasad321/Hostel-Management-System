@@ -163,7 +163,7 @@ export default function ComplaintsPage() {
       <div className="flex flex-col items-center justify-center py-44 space-y-4 bg-slate-50/30 min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
         <p className="text-xs font-semibold text-slate-400 tracking-wider uppercase">
-          Syncing Complaint File Handlers...
+          Loading Complaints...
         </p>
       </div>
     );
@@ -175,27 +175,27 @@ export default function ComplaintsPage() {
       <div className="border-b border-slate-100 pb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1.5">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-              Complaints Hub
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+              Complaints
             </h2>
 
             {/* Context Metric Card Badge */}
             {isAdmin ? (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200/80 rounded-xl text-xs font-black tracking-tight text-amber-800 shadow-3xs">
-                <AlertTriangle className="h-3.5 w-3.5 text-amber-600 stroke-[2.5]" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200/80 rounded-xl text-xs font-black tracking-tight text-amber-800 shadow-2xs">
+                <AlertTriangle className="h-4 w-4 text-amber-600 stroke-[2.5]" />
                 Open Complaints: {openComplaintsCount}
               </div>
             ) : (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-xl text-xs font-black tracking-tight text-indigo-700 shadow-3xs">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-xl text-sm font-bold tracking-tight text-indigo-700 shadow-3xs">
                 <Wrench className="h-3.5 w-3.5 text-indigo-600" />
                 My Complaints: {totalMyComplaints}
               </div>
             )}
           </div>
-          <p className="text-xs font-bold text-indigo-600 tracking-wide uppercase">
+          <p className="text-xs text-slate-500 tracking-wide ">
             {isAdmin
-              ? "Track, manage, and process ongoing grievance and maintenance parameters"
-              : "Report technical failures or hostel living disruptions directly to the administration node"}
+              ? "Manage student complaints and maintenance requests"
+              : "Submit and track your complaints"}
           </p>
         </div>
 
@@ -203,10 +203,10 @@ export default function ComplaintsPage() {
         {!isAdmin && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700 transition shadow-sm self-start sm:self-auto cursor-pointer uppercase tracking-wider"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition shadow-sm self-start sm:self-auto cursor-pointer uppercase tracking-wider"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
-            File Ticket
+            Submit Complaint
           </button>
         )}
       </div>
@@ -222,13 +222,13 @@ export default function ComplaintsPage() {
       {!error && complaints.length === 0 ? (
         <div className="text-center py-24 border border-dashed border-slate-200 rounded-2xl bg-white max-w-2xl mx-auto shadow-xs">
           <Inbox className="h-10 w-10 text-slate-300 mx-auto mb-3 stroke-[1.5]" />
-          <p className="text-sm font-black text-slate-600 uppercase tracking-wide">
-            Log Registry Clean
+          <p className="text-m font-bold text-slate-600 uppercase tracking-wide">
+            No Complaints Found
           </p>
-          <p className="text-xs font-medium text-slate-400 mt-1 max-w-xs mx-auto">
+          <p className="text-sm font-medium text-slate-400 mt-1 max-w-xs mx-auto">
             {isAdmin
-              ? "No outstanding complaint tickets require attention at this time."
-              : "You have not filed any technical grievances or tickets under this user profile record."}
+              ? "No complaints filed by students."
+              : "You have not submitted any complaints yet."}
           </p>
         </div>
       ) : (
@@ -237,33 +237,45 @@ export default function ComplaintsPage() {
           {complaints.map((ticket) => (
             <div
               key={ticket.id}
-              className="bg-white border border-slate-100 p-6 rounded-2xl shadow-xs transition-all duration-300 hover:scale-[1.005] hover:border-indigo-400/40 hover:shadow-sm flex flex-col justify-between"
+              className="bg-white border border-slate-100 p-4 sm:p-6 rounded-2xl shadow-xs transition-all duration-300 hover:scale-[1.005] hover:border-indigo-400/40 hover:shadow-sm flex flex-col justify-between"
             >
               <div className="space-y-4">
-                {/* Meta Top Indicator Header Row */}
-                <div className="flex items-center justify-between gap-4">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-lg bg-slate-50 border border-slate-200/80 text-slate-600 uppercase tracking-wider">
-                    <Layers className="h-3 w-3 text-indigo-500" />
-                    {ticket.category}
-                  </span>
+                {/* Meta Top Indicator Header Row — Mobile Responsive Wrap */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                  <div className="flex items-center justify-between w-full sm:w-auto">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-black rounded-lg bg-slate-50 border border-slate-200/80 text-slate-600 uppercase tracking-wider">
+                      <Layers className="h-3 w-3 text-indigo-500" />
+                      {ticket.category}
+                    </span>
 
-                  {/* Render inline spinner tracking asynchronous state changes */}
-                  {updatingId === ticket.id ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-indigo-600" />
-                  ) : (
-                    // Only render stationary static status badges for non-admins
-                    !isAdmin && getStatusBadge(ticket.status)
-                  )}
+                    {/* Render standalone spinner or static status badge for non-admins inline on mobile */}
+                    <div className="sm:hidden">
+                      {updatingId === ticket.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin text-indigo-600" />
+                      ) : (
+                        !isAdmin && getStatusBadge(ticket.status)
+                      )}
+                    </div>
+                  </div>
 
-                  {/* Operational Dropdown Control Layer exclusively rendered for Admin Users */}
+                  {/* Render regular desktop tracking state placement for non-admins */}
+                  <div className="hidden sm:block">
+                    {updatingId === ticket.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-indigo-600" />
+                    ) : (
+                      !isAdmin && getStatusBadge(ticket.status)
+                    )}
+                  </div>
+
+                  {/* Operational Dropdown Control Layer exclusively rendered for Admin Users — Mobile Optimized Layout */}
                   {isAdmin && updatingId !== ticket.id && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto border-t border-slate-50 pt-2 sm:border-0 sm:pt-0">
                       <select
                         value={ticket.status || "open"}
                         onChange={(e) =>
                           handleStatusChange(ticket.id, e.target.value)
                         }
-                        className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-black uppercase tracking-wider text-slate-700 focus:border-indigo-500 focus:outline-hidden cursor-pointer shadow-3xs"
+                        className="flex-1 sm:flex-initial rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-[11px] font-black uppercase tracking-wider text-slate-700 focus:border-indigo-500 focus:outline-hidden cursor-pointer shadow-3xs min-w-[110px]"
                       >
                         <option value="open">Pending</option>
                         <option value="in_progress">In Progress</option>
@@ -276,28 +288,30 @@ export default function ComplaintsPage() {
 
                 {/* Main body payload data display */}
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-mono">
-                    Ticket ID #{ticket.id}
+                  <p className="text-[10px] sm:text-[12px] font-black uppercase tracking-wider text-slate-400 font-mono">
+                    Complaint #{ticket.id}
                   </p>
-                  <p className="text-xs text-slate-600 font-medium leading-relaxed whitespace-pre-wrap">
+                  <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed whitespace-pre-wrap break-words">
                     {ticket.description}
                   </p>
                 </div>
               </div>
 
-              {/* Data Meta Matrix Footer Layout */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-4 border-t border-slate-50 mt-5 text-[11px] font-bold text-slate-400">
+              {/* Data Meta Matrix Footer Layout — Mobile Responsive Column Stacking */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-2 pt-4 border-t border-slate-50 mt-5 text-[11px] font-bold text-slate-400">
                 {isAdmin && (
-                  <div className="flex items-center gap-1.5">
-                    <User className="h-3.5 w-3.5 text-slate-400" />
-                    <span className="text-slate-500 font-extrabold">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <User className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <span className="text-slate-500 font-bold text-xs truncate">
                       {ticket.student_name || "Unknown Student"}
                     </span>
                   </div>
                 )}
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                  <span>Logged: {formatDate(ticket.created_at)}</span>
+                  <Calendar className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                  <span className="text-slate-500 font-bold text-xs">
+                    Reported: {formatDate(ticket.created_at)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -319,8 +333,8 @@ export default function ComplaintsPage() {
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <Wrench className="h-4 w-4 text-indigo-500" />
-                <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">
-                  File Structural Ticket
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+                  Create Complaint
                 </h3>
               </div>
               <button
@@ -341,14 +355,14 @@ export default function ComplaintsPage() {
 
             <form onSubmit={handleCreateComplaint} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                  Issue Classification Category
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                  Complaint Category
                 </label>
                 <select
                   disabled={formLoading}
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold tracking-tight text-slate-800 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50 cursor-pointer"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold tracking-tight text-slate-800 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50 cursor-pointer"
                 >
                   <option value="Maintenance">Maintenance & Repairs</option>
                   <option value="Electrical">Electrical & Appliances</option>
@@ -362,8 +376,8 @@ export default function ComplaintsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                  Detailed Parameters Description
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                  Complaint Description
                 </label>
                 <textarea
                   required
@@ -371,8 +385,8 @@ export default function ComplaintsPage() {
                   disabled={formLoading}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Provide explicit operational details regarding this structural breakdown event..."
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-medium tracking-tight text-slate-700 placeholder-slate-400 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50 resize-none"
+                  placeholder="Explain your complaint in detail..."
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium tracking-tight text-slate-700 placeholder-slate-400 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50 resize-none"
                 />
               </div>
 
@@ -382,22 +396,22 @@ export default function ComplaintsPage() {
                   type="button"
                   disabled={formLoading}
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-black text-slate-500 bg-white hover:bg-slate-50 transition uppercase tracking-wider cursor-pointer"
+                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-500 bg-white hover:bg-slate-50 transition uppercase tracking-wider cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-black text-white hover:bg-indigo-700 transition shadow-sm disabled:opacity-50 uppercase tracking-wider cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition shadow-sm disabled:opacity-50 uppercase tracking-wider cursor-pointer"
                 >
                   {formLoading ? (
                     <>
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      Filing...
+                      Creating...
                     </>
                   ) : (
-                    "Submit Ticket"
+                    "Submit Complaint"
                   )}
                 </button>
               </div>

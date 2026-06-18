@@ -147,8 +147,7 @@ export default function AuditLogs() {
             Audit Logs
           </h2>
           <p className="text-sm text-slate-400 mt-0.5 font-medium">
-            Centralized activity history for administrative actions, tenant
-            operations, and system events.
+            Track administrative actions and system activities.
           </p>
         </div>
 
@@ -171,10 +170,6 @@ export default function AuditLogs() {
             className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 pl-10 pr-4 text-sm text-slate-700 outline-hidden placeholder:text-slate-400 transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-default select-none">
-          <SlidersHorizontal className="h-3.5 w-3.5" />
-          Options Matrix
-        </button>
       </div>
 
       {/* Main Premium Data Table Block Container */}
@@ -263,7 +258,7 @@ export default function AuditLogs() {
                           <Building2 className="h-3.5 w-3.5" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700">
-                          {log.hostel_name || "-"}
+                          {log.role === "super_admin" ? "-" : (log.hostel_name || "-")}
                         </span>
                       </div>
                     </td>
@@ -283,7 +278,7 @@ export default function AuditLogs() {
                     {/* Action Statement Details */}
                     <td className="px-6 py-4 text-sm font-medium text-slate-600 max-w-sm">
                       <span className="break-words line-clamp-2">
-                        {log.action_time}
+                        {log.action}
                       </span>
                     </td>
 

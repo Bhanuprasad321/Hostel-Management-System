@@ -24,7 +24,7 @@ import api from "../services/api"; // Handled through your existing axios helper
 const superAdminLinks = [
   { to: "/super-admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/hostels", label: "Hostels", icon: Building2 },
-  { to: "/:id/admin/", label: "Admins", icon: Users },
+  { to: "/admins", label: "Admins", icon: Users },
   { to: "/subscriptions", label: "Subscriptions", icon: CreditCard },
   { to: "/audit-logs", label: "Audit Logs", icon: History },
   { to: "/notifications", label: "Notifications", icon: Bell },
@@ -37,12 +37,13 @@ const adminLinks = [
   { to: "/students", label: "Students", icon: Users },
   { to: "/rooms", label: "Rooms", icon: BedDouble },
   { to: "/allocations", label: "Allocations", icon: ClipboardList },
-  { to: "/notifications", label: "Notifications", icon: Bell },
-  { to: "/visitors", label: "Visitors Log", icon: Users },
-  { to: "/settings", label: "Settings", icon: Wrench },
-  { to: "/admin/analytics", label: "Analytics", icon: ChartColumn },
-  { to: "/notices", label: "Notices", icon: AlertCircle },
   { to: "/complaints", label: "Complaints", icon: MessageSquareWarning },
+  { to: "/visitors", label: "Visitors Log", icon: Users },
+  { to: "/notices", label: "Notices", icon: AlertCircle },
+  { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/admin/analytics", label: "Analytics", icon: ChartColumn },
+  { to: "/audit-logs", label: "Audit Logs", icon: History },
+  { to: "/settings", label: "Settings", icon: Wrench },
 ];
 
 const studentLinks = [
@@ -52,9 +53,9 @@ const studentLinks = [
     label: "Allocation Details",
     icon: ClipboardList,
   },
-  { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/notices", label: "Notices", icon: AlertCircle },
   { to: "/complaints", label: "Complaints", icon: MessageSquareWarning },
+  { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/settings", label: "Settings", icon: Wrench },
 ];
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Eye,
   Users,
   BedDouble,
   ClipboardList,
@@ -111,10 +112,10 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between border-b border-slate-100 pb-5">
         <div>
           <h2 className="text-xl font-bold text-slate-800 tracking-tight">
-            Analytics Dashboard
+            Hostel Dashboard
           </h2>
           <p className="text-xs text-slate-400 mt-0.5 font-medium">
-            Real-time infrastructure operations overview
+            Overview of rooms, students, occupancy, and allocations
           </p>
         </div>
       </div>
@@ -124,35 +125,35 @@ export default function AdminDashboard() {
         <StatCard
           title="Total Rooms"
           value={stats.total_rooms}
-          subtext="Configured layout capacity"
+          subtext="Total room capacity"
           Icon={BedDouble}
           iconColor="text-blue-500"
         />
         <StatCard
-          title="Students Enrolled"
+          title="Total Students"
           value={stats.total_students}
-          subtext="Active resident profiles"
+          subtext="Registered students"
           Icon={Users}
           iconColor="text-purple-500"
         />
         <StatCard
           title="Occupied Rooms"
           value={stats.occupied_rooms}
-          subtext="Currently unavailable units"
+          subtext="Currently occupied rooms"
           Icon={DoorOpen}
           iconColor="text-blue-600"
         />
         <StatCard
           title="Vacated Rooms"
           value={stats.vacated_rooms}
-          subtext="Historical transition profiles"
+          subtext="Available rooms"
           Icon={ClipboardList}
           iconColor="text-slate-400"
         />
         <StatCard
           title="Active Allocations"
           value={stats.active_allocations}
-          subtext="Locked tenant ledgers"
+          subtext="Current room allocations"
           Icon={Activity}
           iconColor="text-emerald-500"
         />
@@ -163,10 +164,15 @@ export default function AdminDashboard() {
         {/* Chart A: Occupancy Status Donut Layout */}
         <div className="lg:col-span-4 rounded-xl border border-slate-100 bg-white p-6 shadow-xs flex flex-col transition-all duration-300 hover:border-blue-400/60 hover:ring-4 hover:ring-blue-50/50">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-4 mb-4">
-            <PieIcon className="h-4 w-4 text-blue-500" />
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Occupancy Matrix
-            </h3>
+            <PieIcon className="h-6 w-5 text-blue-500" />
+            <div className="flex flex-col">
+              <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Occupancy Overview
+              </h3>
+              <p className="text-[10px] text-slate-400 font-medium">
+                Occupied vs available rooms
+              </p>
+            </div>
           </div>
           <div className="flex-1 min-h-[240px] flex flex-col justify-center">
             {occupancyPieData.length === 0 ? (
@@ -224,10 +230,15 @@ export default function AdminDashboard() {
         {/* Chart B: Room Status Pie Breakdown */}
         <div className="lg:col-span-4 rounded-xl border border-slate-100 bg-white p-6 shadow-xs flex flex-col transition-all duration-300 hover:border-blue-400/60 hover:ring-4 hover:ring-blue-50/50">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-4 mb-4">
-            <PieIcon className="h-4 w-4 text-blue-500" />
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Room Status
-            </h3>
+            <PieIcon className="h-6 w-5 text-blue-500" />
+            <div className="flex flex-col">
+              <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Room Status
+              </h3>
+              <p className="text-[10px] text-slate-400 font-medium">
+                Occupied vs available rooms
+              </p>
+            </div>
           </div>
           <div className="flex-1 min-h-[240px] flex flex-col justify-center">
             {roomStatusPieData.length === 0 ? (
@@ -285,49 +296,66 @@ export default function AdminDashboard() {
         {/* Chart C: Clean Allocation Status Bar Chart */}
         <div className="lg:col-span-4 rounded-xl border border-slate-100 bg-white p-6 shadow-xs flex flex-col transition-all duration-300 hover:border-blue-400/60 hover:ring-4 hover:ring-blue-50/50">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-4 mb-4">
-            <Activity className="h-4 w-4 text-blue-500" />
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Allocation Status
-            </h3>
+            <Activity className="h-6 w-5 text-blue-500" />
+            <div className="flex flex-col">
+              <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Allocation Status
+              </h3>
+              <p className="text-[10px] text-slate-400 font-medium">
+                Active and vacated allocations
+              </p>
+            </div>
           </div>
-          <div className="flex-1 h-56 mt-2">
+          <div className="w-full h-52 sm:h-56 mt-4 px-1">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={allocationBarData}
-                margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                margin={{
+                  top: 10,
+                  right: 5,
+                  left: window.innerWidth < 640 ? -15 : -20,
+                  bottom: 5,
+                }}
               >
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="#f8fafc"
+                  stroke="#f1f5f9"
                   vertical={false}
                 />
                 <XAxis
                   dataKey="name"
                   stroke="#94a3b8"
-                  fontSize={11}
+                  fontSize={10}
+                  fontFamily="sans-serif"
                   tickLine={false}
                   axisLine={false}
+                  dy={8}
                 />
                 <YAxis
                   stroke="#94a3b8"
-                  fontSize={11}
+                  fontSize={10}
+                  fontFamily="sans-serif"
                   tickLine={false}
                   axisLine={false}
+                  allowDecimals={false}
+                  dx={-4}
                 />
                 <Tooltip
-                  cursor={{ fill: "#f8fafc" }}
+                  cursor={{ fill: "#f8fafc", opacity: 0.4 }}
                   contentStyle={{
                     backgroundColor: "#ffffff",
-                    borderRadius: "8px",
-                    border: "1px solid #f1f5f9",
-                    fontSize: "12px",
+                    borderRadius: "12px",
+                    border: "1px solid #e2e8f0",
+                    fontSize: "11px",
+                    fontWeight: "700",
+                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
                   }}
                 />
                 <Bar
                   dataKey="count"
                   name="Allocations Total"
-                  barSize={38}
-                  radius={[4, 4, 0, 0]}
+                  barSize={window.innerWidth < 640 ? 28 : 36}
+                  radius={[6, 6, 0, 0]}
                 >
                   {allocationBarData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />

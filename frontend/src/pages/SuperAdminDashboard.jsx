@@ -29,14 +29,18 @@ import api from "../services/api";
 // ─── Component: Existing Stat Metric Card ───────────────────
 function StatCard({ title, value, Icon, bg }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-sm border border-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+    <div className="group relative overflow-hidden rounded-xl bg-white p-5 border border-slate-100 shadow-xs transition-all duration-300 hover:border-blue-400/60 hover:ring-4 hover:ring-blue-50/50">
       <div
         className={`absolute inset-0 bg-gradient-to-r ${bg} opacity-[0.03]`}
       />
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">{title}</p>
-          <h2 className="mt-3 text-3xl font-bold text-slate-800">{value}</h2>
+          <p className="text-[13px] font-semibold text-slate-400 uppercase tracking-wider block">
+            {title}
+          </p>
+          <h2 className="mt-1 text-2xl font-black text-slate-900 tracking-tighter leading-none">
+            {value}
+          </h2>
         </div>
         <div
           className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r ${bg}`}
@@ -208,16 +212,18 @@ export default function DashboardCards() {
     <div className="space-y-8">
       {/* View Header */}
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Overview</h2>
+        <h2 className="text-2xl font-bold text-slate-800">
+          Analytics Dashboard
+        </h2>
         <p className="text-sm text-slate-500 mt-1">
           {role === "super_admin"
-            ? "Platform-wide statistics"
+            ? "Real-time overview of hostels, users, and subscriptions"
             : "Your hostel at a glance"}
         </p>
       </div>
 
       {/* Grid: Existing Counters */}
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
         {cardGroup.map((item) => (
           <StatCard key={item.title} {...item} />
         ))}
@@ -233,7 +239,7 @@ export default function DashboardCards() {
               <div className="flex items-center gap-2 border-b border-slate-50 pb-4 mb-4">
                 <PieIcon className="h-4 w-4 text-indigo-500" />
                 <h3 className="text-[14px] font-bold text-slate-700 uppercase tracking-wider">
-                  Licensing Matrix Segment
+                  Subscriptions status
                 </h3>
               </div>
               <div className="flex-1 min-h-[260px] flex flex-col justify-center">
@@ -350,7 +356,7 @@ export default function DashboardCards() {
               <div className="flex items-center gap-2 border-b border-slate-50 pb-4 mb-4">
                 <BarChart3 className="h-4 w-4 text-purple-500" />
                 <h3 className="text-[14px] font-bold text-slate-700 uppercase tracking-wider">
-                  Account Role Distribution
+                  Role Breakdown
                 </h3>
               </div>
               <div className="h-64">
@@ -404,7 +410,7 @@ export default function DashboardCards() {
               <div className="flex items-center gap-2 border-b border-slate-50 pb-4 mb-4">
                 <Activity className="h-4 w-4 text-cyan-500" />
                 <h3 className="text-[14px] font-bold text-slate-700 uppercase tracking-wider">
-                  Allocation Status Ledger
+                  Allocation Status
                 </h3>
               </div>
               <div className="h-64">

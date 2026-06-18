@@ -85,6 +85,7 @@ const upgradePlan = async (req, res) => {
       req.user.id,
       "Upgraded Subscription Plan",
       `Subscription Plan successfully upgraded to ${plan}`,
+      "platform",
     );
     return res
       .status(200)
@@ -122,6 +123,7 @@ const renewalPlan = async (req, res) => {
       req.user.id,
       "Subscription Renewed",
       "Subscription renewed successfully for 30 days",
+      "platform",
     );
     return res.status(200).json({ message: "Successfully renewed the plan" });
   } catch (err) {

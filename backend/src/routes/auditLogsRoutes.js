@@ -3,6 +3,6 @@ const { protect, superAdminOnly } = require("../middleware/authMiddleware");
 const getAuditLogs = require("../controllers/auditLogsController");
 const route = express.Router();
 
-route.get("/", protect, superAdminOnly, getAuditLogs);
+route.get("/", protect, getAuditLogs);
 
 module.exports = route;

@@ -38,7 +38,9 @@ export default function NoticePage() {
       setNotices(res.data || []);
     } catch (err) {
       console.error("Notice stream retrieval failed:", err);
-      setError("Could not parse database timeline definitions from structural notice registry entries.");
+      setError(
+        "Could not parse database timeline definitions from structural notice registry entries.",
+      );
     } finally {
       setLoading(false);
     }
@@ -60,7 +62,7 @@ export default function NoticePage() {
       setFormLoading(true);
       setFormError("");
       await api.post("/notices", { title, description });
-      
+
       // Clear inputs and reload matrix tracking updates
       setTitle("");
       setDescription("");
@@ -68,7 +70,10 @@ export default function NoticePage() {
       fetchNotices();
     } catch (err) {
       console.error("Notice configuration matrix rejected payload:", err);
-      setFormError(err.response?.data?.message || "Failed to commit notice records safely.");
+      setFormError(
+        err.response?.data?.message ||
+          "Failed to commit notice records safely.",
+      );
     } finally {
       setFormLoading(false);
     }
@@ -76,8 +81,9 @@ export default function NoticePage() {
 
   // Handle Notice Destruction
   const handleDeleteNotice = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this notice configuration?")) return;
-    
+    if (!window.confirm("Are you sure you want to delete this notice ?"))
+      return;
+
     try {
       await api.delete(`/notices/${id}`);
       setNotices((prev) => prev.filter((item) => item.id !== id));
@@ -103,7 +109,7 @@ export default function NoticePage() {
       <div className="flex flex-col items-center justify-center py-44 space-y-4 bg-slate-50/30 min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
         <p className="text-xs font-semibold text-slate-400 tracking-wider uppercase">
-          Syncing Notice Board Timeline...
+          Loading Notice Board...
         </p>
       </div>
     );
@@ -111,15 +117,14 @@ export default function NoticePage() {
 
   return (
     <div className="space-y-8 bg-slate-50/40 p-1 min-h-screen antialiased w-full">
-      
       {/* ─── HEAD INTERACTION ACTION HUB ROW ─── */}
       <div className="border-b border-slate-100 pb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-0.5">
-          <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
             Notice Board
           </h2>
-          <p className="text-xs font-bold text-indigo-600 tracking-wide uppercase">
-            Official structural broadcasts and announcements for your hostel complex
+          <p className="text-xs text-slate-500 tracking-wide ">
+            View and manage hostel announcements
           </p>
         </div>
 
@@ -130,7 +135,7 @@ export default function NoticePage() {
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700 transition shadow-sm self-start sm:self-auto cursor-pointer uppercase tracking-wider"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
-            Publish Notice
+            Add Notice
           </button>
         )}
       </div>
@@ -146,9 +151,11 @@ export default function NoticePage() {
       {!error && notices.length === 0 ? (
         <div className="text-center py-24 border border-dashed border-slate-200 rounded-2xl bg-white max-w-2xl mx-auto shadow-xs">
           <Megaphone className="h-10 w-10 text-slate-300 mx-auto mb-3 stroke-[1.5]" />
-          <p className="text-sm font-black text-slate-600 uppercase tracking-wide">Notice Board Empty</p>
+          <p className="text-sm font-black text-slate-600 uppercase tracking-wide">
+            Notice Board Empty
+          </p>
           <p className="text-xs font-medium text-slate-400 mt-1 max-w-xs mx-auto">
-            There are currently no active system broadcasts log files mapped to this sector cluster database.
+            There are currently no notices added by the Admin
           </p>
         </div>
       ) : (
@@ -161,10 +168,10 @@ export default function NoticePage() {
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-base font-black text-slate-800 tracking-tight leading-snug line-clamp-2">
+                  <h3 className="text-base font-bold text-slate-800 tracking-tight leading-snug line-clamp-2">
                     {notice.title}
                   </h3>
-                  
+
                   {/* Authorized elimination handler wrapper targeting administrative permissions */}
                   {isHostelAdmin && (
                     <button
@@ -176,8 +183,8 @@ export default function NoticePage() {
                     </button>
                   )}
                 </div>
-                
-                <p className="text-xs text-slate-600 leading-relaxed font-medium whitespace-pre-wrap">
+
+                <p className="text-sm text-slate-600 leading-relaxed font-medium whitespace-pre-wrap">
                   {notice.description}
                 </p>
               </div>
@@ -185,11 +192,13 @@ export default function NoticePage() {
               {/* Data Meta Matrix Footer Footer Layout */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-4 border-t border-slate-50 mt-5 text-[11px] font-bold text-slate-400">
                 <div className="flex items-center gap-1.5">
-                  <User className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-slate-500 font-extrabold">{notice.created_by || "Admin Node"}</span>
+                  <User className="h-4 w-4 text-slate-400" />
+                  <span className="text-slate-500 font-bold text-[13px]">
+                    {notice.created_by || "Admin Node"}
+                  </span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                <div className="flex items-center gap-1.5 text-[12px]">
+                  <Calendar className="h-4 w-4 text-slate-400" />
                   <span>{formatDate(notice.created_at)}</span>
                 </div>
               </div>
@@ -209,12 +218,11 @@ export default function NoticePage() {
 
           {/* Form Card */}
           <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-xl border border-slate-100 overflow-hidden transform transition-all p-6 space-y-5 animate-fade-in">
-            
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <Megaphone className="h-4 w-4 text-indigo-500" />
-                <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">
-                  Compose System Broadcast
+                <h3 className="text-m  text-slate-800 uppercase tracking-wider">
+                  Add New Notice
                 </h3>
               </div>
               <button
@@ -234,10 +242,9 @@ export default function NoticePage() {
             )}
 
             <form onSubmit={handleCreateNotice} className="space-y-4">
-              
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                  Notice Title Header
+                <label className="text-[12px] font-bold uppercase tracking-wider text-black block">
+                  Notice Title
                 </label>
                 <input
                   type="text"
@@ -245,14 +252,14 @@ export default function NoticePage() {
                   disabled={formLoading}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g., Scheduled Maintenance / Event Signups"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold tracking-tight text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50"
+                  placeholder="e.g., Dinner Timings, Water Supply Notice"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm tracking-tight text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                  Announcement Description
+                <label className="text-[12px]  uppercase tracking-wider text-black font-bold block">
+                  Notice Description
                 </label>
                 <textarea
                   required
@@ -260,8 +267,8 @@ export default function NoticePage() {
                   disabled={formLoading}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Provide explicit operational parameters regarding this broadcast instance statement text payload..."
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-medium tracking-tight text-slate-700 placeholder-slate-400 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50 resize-none"
+                  placeholder="Enter notice details..."
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium tracking-tight text-slate-700 placeholder-slate-400 focus:border-indigo-500 focus:outline-hidden transition shadow-3xs disabled:bg-slate-50 resize-none"
                 />
               </div>
 
@@ -271,14 +278,14 @@ export default function NoticePage() {
                   type="button"
                   disabled={formLoading}
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-black text-slate-500 bg-white hover:bg-slate-50 transition uppercase tracking-wider cursor-pointer"
+                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-500 bg-white hover:bg-slate-50 transition uppercase tracking-wider cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-black text-white hover:bg-indigo-700 transition shadow-sm disabled:opacity-50 uppercase tracking-wider cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-blold text-white hover:bg-indigo-700 transition shadow-sm disabled:opacity-50 uppercase tracking-wider cursor-pointer"
                 >
                   {formLoading ? (
                     <>
@@ -286,11 +293,10 @@ export default function NoticePage() {
                       Publishing...
                     </>
                   ) : (
-                    "Commit Broadcast"
+                    "Publish Notice"
                   )}
                 </button>
               </div>
-
             </form>
           </div>
         </div>

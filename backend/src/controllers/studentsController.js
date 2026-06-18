@@ -67,6 +67,7 @@ const getStudentDetails = async (req, res) => {
     if (student.length === 0)
       return res.status(404).json({ message: "404 Not found" });
     return res.status(200).json({
+      id: student_id,
       name: student[0].name,
       email: student[0].email,
     });
@@ -94,7 +95,6 @@ const getAllocationDetails = async (req, res) => {
 
     return res.status(200).json(rows[0]);
   } catch (err) {
-    console.log(err);
     return res.status(500).json({
       message: "Internal server error",
     });

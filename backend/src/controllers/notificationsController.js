@@ -16,9 +16,8 @@ const getAllNotifications = async (req, res) => {
 
     if (req.user.role === "super_admin") {
       const [notifications] = await db.promise().query(
-        `SELECT *
-         FROM notifications
-         ORDER BY created_at DESC`,
+        `SELECT * FROM notifications WHERE notification_scope = 'platform'
+        ORDER BY created_at DESC`,
       );
 
       return res.status(200).json(notifications);

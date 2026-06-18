@@ -1,14 +1,16 @@
-const express = require('express');
+const express = require("express");
 const route = express.Router();
-const {createAllocation, getAllAllocations, getAllocation, vacateStudent} = require('../controllers/allocationsController');
-const {protect,adminOnly} = require('../middleware/authMiddleware');
+const {
+  createAllocation,
+  getAllAllocations,
+  getAllocation,
+  vacateStudent,
+} = require("../controllers/allocationsController");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 
-
-route.post('/',protect,adminOnly,createAllocation);
-route.get('/',protect,adminOnly,getAllAllocations);
-route.get('/:id',protect,adminOnly,getAllocation);
-route.put('/:id',protect,adminOnly,vacateStudent);
-
-
+route.post("/", protect, adminOnly, createAllocation);
+route.get("/:id", protect, adminOnly, getAllocation);
+route.get("/", protect, adminOnly, getAllAllocations);
+route.put("/:id", protect, adminOnly, vacateStudent);
 
 module.exports = route;

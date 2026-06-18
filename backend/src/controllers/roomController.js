@@ -62,6 +62,7 @@ const getRoomDetails = async (req, res) => {
       ]);
     if (room.length === 0)
       return res.status(404).json({ message: "404 Not found" });
+    console.log(room);
     return res.status(200).json(room);
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });

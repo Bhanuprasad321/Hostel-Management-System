@@ -9,8 +9,8 @@ const {
 } = require("../controllers/roomController");
 
 route.post("/", protect, adminOnly, createRoom);
-route.get("/", protect, adminOnly, getAllRooms);
 route.get("/:id", protect, adminOnly, getRoomDetails);
 route.put("/:id", protect, adminOnly, updateRoom);
+route.get("/", protect, adminOnly, getAllRooms);
 
 module.exports = route;

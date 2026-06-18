@@ -1,6 +1,7 @@
 const { db } = require("../config/mysql");
 const bcrypt = require("bcrypt");
 const createAuditLog = require("../utils/auditLog");
+const createNotification = require("../utils/createNotifications");
 const getProfile = async (req, res) => {
   try {
     const user_id = req.user.id;
@@ -128,6 +129,13 @@ const updateHostelSettings = async (req, res) => {
         hostel_id,
       ]);
     await createAuditLog(hostel_id, req.user.id, "Updated hostel settings");
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Hostel Settings Updated",
+      `${hostel_name} details were updated by the hostel admin`,
+      "platform",
+    );
     return res.status(200).json({
       message: "Hostel settings updated successfully",
     });

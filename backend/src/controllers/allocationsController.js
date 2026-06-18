@@ -117,12 +117,21 @@ const getAllocation = async (req, res) => {
     if (allocation.length === 0) {
       return res.status(404).json({ message: "404 Not Found" });
     }
+    const [room] = await db
+      .promise()
+      .query("SELECT * FROM rooms WHERE hostel_id = ? AND id = ?", [
+        hostel_id,
+        allocation[0].room_id,
+      ]);
+    const room_number = room[0].room_number;
     return res.status(200).json({
       student_id: allocation[0].student_id,
       room_id: allocation[0].room_id,
+      room_number,
       status: allocation[0].status,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -149,6 +158,8 @@ const vacateStudent = async (req, res) => {
       "UPDATE allocations SET status = ? , vacated_at = NOW() WHERE id = ? AND student_id = ?",
       ["vacated", allocation_id, student_id],
     );
+    const [student] = await db.promise().query('SELECT * FROM users WHERE id = ? AND hostel_id = ?',[student_id,hostel_id]);
+    const name = student[0].name;
     const [room] = await connection.query(
       "SELECT * FROM rooms WHERE id = ? AND hostel_id=?",
       [room_id, hostel_id],
@@ -173,6 +184,7 @@ const vacateStudent = async (req, res) => {
       .status(200)
       .json({ message: "Successfully updated the vacated data" });
   } catch (err) {
+    console.log(err);
     if (connection) {
       await connection.rollback();
     }

@@ -79,11 +79,11 @@ export default function ProfilePage() {
     <div className="space-y-8 bg-slate-50/40 p-1 min-h-screen antialiased w-full">
       {/* ─── HEADER TITLE SECTION ─── */}
       <div className="border-b border-slate-100 pb-5">
-        <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
           Account Profile
         </h2>
-        <p className="text-xs font-bold text-indigo-600 tracking-wide uppercase mt-0.5">
-          Personal account details and hostel membership information
+        <p className="text-xs text-slate-400 tracking-wide mt-0.5">
+          View your account information and hostel details
         </p>
       </div>
 
@@ -114,7 +114,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-base font-black text-slate-800 tracking-tight leading-tight line-clamp-1">
+              <h3 className="text-base font-bold text-slate-800 tracking-tight leading-tight line-clamp-1">
                 {profile.name}
               </h3>
               <span
@@ -127,7 +127,7 @@ export default function ProfilePage() {
 
             <div className="pt-3 border-t border-slate-50 flex items-center justify-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
               <Fingerprint className="h-3..5 w-3.5 text-slate-400" />
-              Secure Node Mapped
+              Verified Account
             </div>
           </div>
 
@@ -139,10 +139,10 @@ export default function ProfilePage() {
                 <User className="h-4 w-4 text-slate-400" />
               </div>
               <div className="space-y-0.5">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                  Account Holder
+                <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">
+                  FULL NAME
                 </p>
-                <p className="text-sm font-black text-slate-800 tracking-tight">
+                <p className="text-m font-bold text-slate-800 tracking-tight">
                   {profile.name}
                 </p>
               </div>
@@ -154,10 +154,10 @@ export default function ProfilePage() {
                 <Mail className="h-4 w-4 text-slate-400" />
               </div>
               <div className="space-y-0.5 min-w-0">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                  Registered Email
+                <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">
+                  EMAIL ADDRESS
                 </p>
-                <p className="text-sm font-bold text-slate-700 tracking-tight truncate break-all">
+                <p className="text-m font-bold  text-slate-700 tracking-tight truncate break-all">
                   {profile.email}
                 </p>
               </div>
@@ -169,11 +169,11 @@ export default function ProfilePage() {
                 <Building2 className="h-4 w-4 text-indigo-500" />
               </div>
               <div className="space-y-0.5">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                  Hostel
+                <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">
+                  HOSTEL NAME
                 </p>
-                <p className="text-sm font-black text-indigo-600 tracking-tight">
-                  {profile.hostel_name || "Global Management Node"}
+                <p className="text-m font-bold text-indigo-600 tracking-tight">
+                  {profile.hostel_name || "Global Management"}
                 </p>
               </div>
             </div>
@@ -184,10 +184,10 @@ export default function ProfilePage() {
                 <Calendar className="h-4 w-4 text-slate-400" />
               </div>
               <div className="space-y-0.5">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                  Account Creation
+                <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">
+                  ACCOUNT CREATED
                 </p>
-                <p className="text-sm font-bold text-slate-600 tracking-tight">
+                <p className="text- m font-bold text-slate-600 tracking-tight">
                   {formatDate(profile.created_at)}
                 </p>
               </div>

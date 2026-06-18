@@ -37,7 +37,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/super-admin" element={<SuperAdminDashboard />} />
             <Route path="/hostels" element={<HostelsRoute />} />
-            <Route path="/:id/admin/" element={<AdminRoute />} />
+            <Route path="/admins" element={<AdminRoute />} />
             <Route path="/hostel-admin" element={<AdminDashboard />} />
             <Route path="/student" element={<StudentDashboard />} />
             <Route path="/allocation-details" element={<AllocationDetails />} />

@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   History,
   ShieldAlert,
+  Eye,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -108,12 +109,7 @@ export default function AllocationsRoute() {
   // Vacate Processing Handler
   const handleVacateStudent = async (e, id) => {
     e.stopPropagation(); // Stop row click trigger
-    if (
-      !window.confirm(
-        "Are you certain you want to transition this housing allocation status to Vacated?",
-      )
-    )
-      return;
+    if (!window.confirm("Are you sure you want to vacate the student?")) return;
 
     try {
       setProcessingId(id);
@@ -170,8 +166,7 @@ export default function AllocationsRoute() {
             Room Allocations
           </h2>
           <p className="mt-1 text-sm text-slate-500">
-            Map student profiles to configured room numbers and manage tenure
-            terms
+            Assign students to rooms and manage allocations
           </p>
         </div>
         <div className="flex items-center gap-3 self-start">
@@ -201,7 +196,7 @@ export default function AllocationsRoute() {
           </div>
           <div>
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
-              Active Placements
+              Active Allocations
             </p>
             <h2 className="text-3xl font-bold text-slate-800 mt-0.5">
               {activeCount}
@@ -215,7 +210,7 @@ export default function AllocationsRoute() {
           </div>
           <div>
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
-              Total Ledger Entries
+              Total Allocations
             </p>
             <h2 className="text-3xl font-bold text-slate-800 mt-0.5">
               {allocations.length}
@@ -239,13 +234,13 @@ export default function AllocationsRoute() {
           <span className="font-semibold text-slate-700">
             {filteredAllocations.length}
           </span>{" "}
-          tracking profiles
+          allocations
         </p>
         <div className="relative max-w-xs w-full">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by ID or Status..."
+            placeholder="Search by student, room, or status..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
@@ -274,16 +269,16 @@ export default function AllocationsRoute() {
               <thead className="bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <tr>
                   <th scope="col" className="px-6 py-4">
-                    Allocation
+                    Allocation ID
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Room Id
+                    Room
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Tenant Identity ID
+                    Student
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Current Status
+                    Status
                   </th>
                   <th scope="col" className="px-6 py-4 text-right">
                     Actions
@@ -303,7 +298,7 @@ export default function AllocationsRoute() {
                       {/* Reference Assignment ID */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">
-                          Assignment #{item.id || "N/A"}
+                          #{item.id || "N/A"}
                         </span>
                       </td>
 
@@ -335,7 +330,7 @@ export default function AllocationsRoute() {
                           <span
                             className={`h-1.5 w-1.5 rounded-full ${isVacated ? "bg-slate-400" : "bg-emerald-600"}`}
                           />
-                          {isVacated ? "Vacated" : "Active Placement"}
+                          {isVacated ? "Vacated" : "Active"}
                         </span>
                       </td>
 
@@ -367,8 +362,8 @@ export default function AllocationsRoute() {
                             onClick={() => openAllocationDetails(item.id)}
                             className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition shadow-sm"
                           >
-                            Inspect
-                            <ExternalLink className="h-3 w-3" />
+                            <Eye className="h-3 w-3" />
+                            View
                           </button>
                         </div>
                       </td>
@@ -393,10 +388,10 @@ export default function AllocationsRoute() {
                 </div>
                 <div>
                   <h2 className="text-[15px] font-semibold text-slate-800">
-                    Assign Housing Placement
+                    Allocate Room
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Map an academic tenant profile to an open room asset
+                    Assign a student to a room
                   </p>
                 </div>
               </div>
@@ -482,7 +477,7 @@ export default function AllocationsRoute() {
                   ) : (
                     <CheckCircle2 className="h-4 w-4" />
                   )}
-                  {formLoading ? "Saving Mapping..." : "Execute Placement"}
+                  {formLoading ? "Allocating..." : "Allocate Room"}
                 </button>
               </div>
             </form>
@@ -502,10 +497,10 @@ export default function AllocationsRoute() {
                 </div>
                 <div>
                   <h2 className="text-[15px] font-semibold text-slate-800">
-                    Assignment File Summary
+                    Allocation Details
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Granular log breakdown of tracking registry
+                    Room allocation information
                   </p>
                 </div>
               </div>
@@ -526,7 +521,7 @@ export default function AllocationsRoute() {
                 <div className="flex flex-col items-center justify-center py-12 space-y-3">
                   <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
                   <p className="text-xs text-slate-400">
-                    Querying registry matrix nodes...
+                    Loading Alocation Details...
                   </p>
                 </div>
               ) : selectedAllocation ? (
@@ -539,23 +534,12 @@ export default function AllocationsRoute() {
                         : "bg-emerald-50/40 border-emerald-100/60"
                     }`}
                   >
-                    <div
-                      className={`flex h-12 w-12 items-center justify-center rounded-xl shadow-xs font-bold text-white ${
-                        selectedAllocation.status === "vacated"
-                          ? "bg-slate-400"
-                          : "bg-emerald-600"
-                      }`}
-                    >
-                      {selectedAllocation.room_id
-                        ? `N°${selectedAllocation.room_id}`
-                        : "#"}
-                    </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-bold text-slate-800">
-                        Room Unit {selectedAllocation.room_id}
+                      <h3 className="text-m font-bold text-slate-800">
+                        Room {selectedAllocation.room_id}
                       </h3>
                       <p className="text-xs text-slate-400 mt-0.5 font-medium">
-                        Current Lifecycle Status:{" "}
+                        Allocation Status:{" "}
                         <span
                           className={
                             selectedAllocation.status === "vacated"
@@ -574,27 +558,27 @@ export default function AllocationsRoute() {
                     <div className="flex justify-between items-center py-2 border-b border-slate-50">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                         <User className="h-3.5 w-3.5 text-slate-400" />
-                        Target Tenant System ID
+                        Student ID
                       </span>
                       <span className="text-sm font-bold text-slate-800">
-                        ID #{selectedAllocation.student_id}
+                        #{selectedAllocation.student_id}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center py-2 border-b border-slate-50">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                         <BedDouble className="h-3.5 w-3.5 text-slate-400" />
-                        Allocated Room Identifier
+                        Room Number
                       </span>
                       <span className="text-sm font-bold text-slate-800">
-                        Room ID #{selectedAllocation.room_id}
+                        {selectedAllocation.room_number}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center py-2">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                         <ClipboardList className="h-3.5 w-3.5 text-slate-400" />
-                        Tenure Status Condition
+                        Status
                       </span>
                       <span
                         className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide ${
@@ -603,7 +587,7 @@ export default function AllocationsRoute() {
                             : "bg-emerald-100 text-emerald-800"
                         }`}
                       >
-                        {selectedAllocation.status || "allocated"}
+                        {selectedAllocation.status}
                       </span>
                     </div>
                   </div>
@@ -618,7 +602,7 @@ export default function AllocationsRoute() {
                       }}
                       className="w-full rounded-xl border border-slate-200 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition"
                     >
-                      Dismiss Blueprint Summary
+                      Close
                     </button>
                   </div>
                 </div>

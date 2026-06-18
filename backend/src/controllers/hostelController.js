@@ -38,6 +38,7 @@ const createHostel = async (req, res) => {
       req.user.id,
       "New Hostel",
       `${hostel_name} was registered`,
+      "platform",
     );
     return res.status(200).json({ message: "New hostel is created" });
   } catch (err) {
@@ -99,6 +100,7 @@ const createHostelAdmin = async (req, res) => {
       req.user.id,
       "Admin Created",
       `Admin created for ${name}`,
+      "platform",
     );
     return res.status(200).json({ message: "New hostel admin is created" });
   } catch (err) {

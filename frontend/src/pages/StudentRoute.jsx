@@ -11,6 +11,7 @@ import {
   GraduationCap,
   ExternalLink,
   ShieldCheck,
+  Eye,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -135,11 +136,9 @@ export default function Students() {
       {/* ─── Page Header Section ─── */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">
-            Student Directory
-          </h2>
+          <h2 className="text-2xl font-bold text-slate-800">Students</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Manage academic tenant profiling, accounts, and directory listings
+            Manage student accounts and hostel residents
           </p>
         </div>
         <div className="flex items-center gap-3 self-start">
@@ -156,7 +155,7 @@ export default function Students() {
             className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition shadow-sm"
           >
             <Plus className="h-4 w-4" />
-            Add New Student
+            Add Student
           </button>
         </div>
       </div>
@@ -169,7 +168,7 @@ export default function Students() {
           </div>
           <div>
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
-              Total Enrollment
+              Total Students
             </p>
             <h2 className="text-3xl font-bold text-slate-800 mt-0.5">
               {students.length}
@@ -188,11 +187,11 @@ export default function Students() {
       {/* ─── Control Utility Filter Row ─── */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-slate-500">
-          Filtered Results:{" "}
+          Total Students:{" "}
           <span className="font-semibold text-slate-700">
             {filteredStudents.length}
           </span>{" "}
-          records
+          students
         </p>
         <div className="relative max-w-xs w-full">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -227,10 +226,10 @@ export default function Students() {
               <thead className="bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <tr>
                   <th scope="col" className="px-6 py-4">
-                    Student Profile
+                    Student
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Email Address
+                    Email
                   </th>
                   <th scope="col" className="px-6 py-4 text-right">
                     Actions
@@ -267,8 +266,8 @@ export default function Students() {
                         onClick={() => openStudentDetails(student.id)}
                         className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-sm"
                       >
-                        Inspect
-                        <ExternalLink className="h-3 w-3" />
+                        <Eye className="h-3 w-3" />
+                        View
                       </button>
                     </td>
                   </tr>
@@ -294,7 +293,7 @@ export default function Students() {
                     Create Student Profile
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Add a new student account to your directory
+                    Create a student account
                   </p>
                 </div>
               </div>
@@ -388,7 +387,7 @@ export default function Students() {
                   ) : (
                     <Plus className="h-4 w-4" />
                   )}
-                  {formLoading ? "Saving Profile..." : "Register Student"}
+                  {formLoading ? "Saving Profile..." : "Create Student"}
                 </button>
               </div>
             </form>
@@ -408,10 +407,10 @@ export default function Students() {
                 </div>
                 <div>
                   <h2 className="text-[15px] font-semibold text-slate-800">
-                    Student Profile Summary
+                    Student Details
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Comprehensive tenant directory overview
+                    Student account information
                   </p>
                 </div>
               </div>
@@ -432,7 +431,7 @@ export default function Students() {
                 <div className="flex flex-col items-center justify-center py-12 space-y-3">
                   <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
                   <p className="text-xs text-slate-400">
-                    Loading system entities...
+                    Loading Student Details
                   </p>
                 </div>
               ) : selectedStudent ? (
@@ -449,7 +448,7 @@ export default function Students() {
                         {selectedStudent.name}
                       </h3>
                       <p className="text-xs text-slate-400 mt-0.5 font-medium">
-                        Internal System User ID: #{selectedStudent.id}
+                        Student ID: #{selectedStudent.id}
                       </p>
                     </div>
                   </div>
@@ -458,7 +457,7 @@ export default function Students() {
                   <div className="space-y-3 pt-1">
                     <div className="flex flex-col gap-1 py-2 border-b border-slate-50">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Account Full Legal Name
+                        Full Name
                       </span>
                       <span className="text-sm font-medium text-slate-800">
                         {selectedStudent.name}
@@ -466,7 +465,7 @@ export default function Students() {
                     </div>
                     <div className="flex flex-col gap-1 py-2">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Verified Communication Email
+                        Email Address
                       </span>
                       <span className="text-sm font-medium text-slate-800 break-all">
                         {selectedStudent.email}
@@ -484,7 +483,7 @@ export default function Students() {
                       }}
                       className="w-full rounded-xl border border-slate-200 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
                     >
-                      Dismiss View Layer
+                      Close
                     </button>
                   </div>
                 </div>

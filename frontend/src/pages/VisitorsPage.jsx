@@ -159,7 +159,7 @@ export default function VisitorsPage() {
     const isOut = status?.toLowerCase() === "checked_out";
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 text-[10px] font-black rounded-sm uppercase tracking-wider border ${
+        className={`inline-flex items-center px-2.5 py-0.5 text-[11px] font-black rounded-sm uppercase tracking-wider border ${
           isOut
             ? "bg-slate-50 border-slate-200 text-slate-500"
             : "bg-amber-50 border-amber-200 text-amber-700"
@@ -202,26 +202,25 @@ export default function VisitorsPage() {
       <div className="border-b border-slate-100 pb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1.5">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-              Visitor Gate Logs
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+              Visitors
             </h2>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200/80 rounded-xl text-xs font-black tracking-tight text-amber-800 shadow-3xs">
               <Users className="h-3.5 w-3.5 text-amber-600" />
               Active Visitors: {liveActiveInside}
             </div>
           </div>
-          <p className="text-xs font-bold text-indigo-600 tracking-wide uppercase">
-            Monitor ongoing guest check-ins, record parameters, and authorize
-            site exit closures
+          <p className="text-xs  text-slate-500 tracking-wide">
+            Track and manage hostel visitor entries
           </p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all duration-200 shadow-3xs uppercase tracking-wider cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all duration-200 shadow-3xs uppercase tracking-wider cursor-pointer"
         >
           <Plus className="h-4 w-4 stroke-[2.5]" />
-          Log Visitor
+          Add Visitor
         </button>
       </div>
 
@@ -240,7 +239,7 @@ export default function VisitorsPage() {
             Registry Log Empty
           </p>
           <p className="text-xs font-medium text-slate-400 mt-1">
-            No guest visitors have been logged to this infrastructure node yet.
+            No guest visitors have been logged to this register yet.
           </p>
         </div>
       ) : (
@@ -256,10 +255,10 @@ export default function VisitorsPage() {
                 {/* Meta Top Line Row */}
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-0.5">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider font-mono">
-                      Log Entry Card #{log.id}
+                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider font-mono">
+                      Visitor #{log.id}
                     </p>
-                    <h3 className="text-base font-black text-slate-800 tracking-tight flex items-center gap-1.5">
+                    <h3 className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-1.5">
                       {log.visitor_name}
                     </h3>
                   </div>
@@ -285,19 +284,19 @@ export default function VisitorsPage() {
                 </div>
 
                 {/* Info Attributes Two-Column Split Layout */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-medium text-slate-600 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm font-medium text-slate-600 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                      <Phone className="h-4 w-4 text-slate-400 shrink-0" />
                       <span className="truncate tracking-tight">
                         {log.visitor_phone}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <User className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
+                      <User className="h-4 w-4 text-indigo-500 shrink-0" />
                       <div className="truncate">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block leading-none">
-                          Host Student
+                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider block leading-none">
+                          Student
                         </span>
                         <span className="font-bold text-slate-700">
                           {log.student_name}
@@ -310,10 +309,10 @@ export default function VisitorsPage() {
                     <div className="flex items-start gap-2">
                       <FileText className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
                       <div className="min-w-0">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block leading-none">
+                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider block leading-none">
                           Purpose
                         </span>
-                        <p className="text-slate-700 font-medium tracking-tight text-[11px] line-clamp-2 mt-0.5 leading-tight">
+                        <p className="text-slate-700 font-medium tracking-tight text-[16px] line-clamp-2 mt-0.5 leading-tight">
                           {log.purpose}
                         </p>
                       </div>
@@ -322,10 +321,10 @@ export default function VisitorsPage() {
                 </div>
 
                 {/* Timeline Timestamps Row */}
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] font-bold text-slate-400 pt-3 border-t border-slate-50">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-bold text-slate-400 pt-3 border-t border-slate-50">
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3.5 w-3.5 text-emerald-500" />
-                    <span>IN: {formatTimestamp(log.check_in)}</span>
+                    <span>Check In: {formatTimestamp(log.check_in)}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <LogOut className="h-3.5 w-3.5 text-slate-400" />
@@ -336,7 +335,7 @@ export default function VisitorsPage() {
                           : "font-mono tracking-wide text-amber-600"
                       }
                     >
-                      OUT: {formatTimestamp(log.check_out)}
+                      Check Out: {formatTimestamp(log.check_out)}
                     </span>
                   </div>
                 </div>
@@ -359,7 +358,7 @@ export default function VisitorsPage() {
               <div className="flex items-center gap-2">
                 <UserCheck className="h-4 w-4 text-indigo-500" />
                 <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">
-                  Authorize Visitor Access Entry
+                  Add Visitor
                 </h3>
               </div>
               <button
@@ -381,8 +380,8 @@ export default function VisitorsPage() {
             <form onSubmit={handleRegisterVisitor} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                    Host Student Allocation
+                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                    Student
                   </label>
                   <div className="relative">
                     <Hash className="absolute left-3 top-3.5 h-3.5 w-3.5 text-slate-400 z-10" />
@@ -396,7 +395,7 @@ export default function VisitorsPage() {
                       <option value="">
                         {loadingStudents
                           ? "Fetching records..."
-                          : "-- Select Resident --"}
+                          : "Select Student"}
                       </option>
                       {studentsList.map((student) => (
                         <option key={student.id} value={student.id}>
@@ -421,8 +420,8 @@ export default function VisitorsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                    Visitor Full Legal Name
+                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                    Visitor Name
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
@@ -440,8 +439,8 @@ export default function VisitorsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                  Visitor Mobile Contact Number
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                  Mobile Number
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
@@ -465,15 +464,15 @@ export default function VisitorsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                  Explicit Purpose of Entry Visit
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                  Purpose of Visit
                 </label>
                 <div className="relative">
                   <FileText className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Local guardian delivering monthly personal amenities"
+                    placeholder="e.g. Parent visit, friend visit, document delivery"
                     disabled={formLoading}
                     value={purpose}
                     onChange={(e) => setPurpose(e.target.value)}
@@ -502,7 +501,7 @@ export default function VisitorsPage() {
                       Recording...
                     </>
                   ) : (
-                    "Authorize Entry"
+                    "Add Visitor"
                   )}
                 </button>
               </div>

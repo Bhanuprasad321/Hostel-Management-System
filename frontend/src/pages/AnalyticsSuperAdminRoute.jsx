@@ -201,11 +201,10 @@ export default function AnalyticsSuperAdminRoute() {
       {/* Structural Title Header block */}
       <div className="border-b border-slate-100 pb-5">
         <h2 className="text-xl font-bold text-slate-800 tracking-tight">
-          System Analytics Node
+          Platform Analytics
         </h2>
         <p className="text-xs text-slate-400 mt-0.5 font-medium">
-          Platform performance matrix, tenancy occupancy telemetry, and
-          financial health indexes
+          Monitor hostel growth, subscriptions, occupancy, and platform activity
         </p>
       </div>
 
@@ -266,10 +265,10 @@ export default function AnalyticsSuperAdminRoute() {
             <PieIcon className="h-4 w-4 text-indigo-500" />
             <div>
               <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Subscription Tier Distribution
+                Subscription Plans
               </h4>
               <p className="text-[10px] text-slate-400 font-medium">
-                Active operational plans provisioned per node footprint
+                Distribution of hostels across subscription plans
               </p>
             </div>
           </div>
@@ -284,10 +283,10 @@ export default function AnalyticsSuperAdminRoute() {
             <TrendingUp className="h-4 w-4 text-emerald-500" />
             <div>
               <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Subscription Status Health
+                Subscription Status
               </h4>
               <p className="text-[10px] text-slate-400 font-medium">
-                Live evaluation mapping structural cashflow security
+                Overview of active, trial, expired, and cancelled subscriptions
               </p>
             </div>
           </div>
@@ -302,11 +301,10 @@ export default function AnalyticsSuperAdminRoute() {
             <BedDouble className="h-4 w-4 text-orange-500" />
             <div>
               <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Global Capacity Footprint
+                Bed Occupancy Overview
               </h4>
               <p className="text-[10px] text-slate-400 font-medium">
-                Overall platform vacancy and occupied bed breakdown mapping
-                parameters
+                Occupied vs vacant beds across all hostels
               </p>
             </div>
           </div>
@@ -321,10 +319,10 @@ export default function AnalyticsSuperAdminRoute() {
             <ClipboardList className="h-4 w-4 text-indigo-500" />
             <div>
               <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                Allocation Ledger Turnover
+                Room Allocation Overview
               </h4>
               <p className="text-[10px] text-slate-400 font-medium">
-                Comparative analysis tracing active lifecycle vs vacated records
+                Active and vacated allocations
               </p>
             </div>
           </div>
@@ -340,11 +338,10 @@ export default function AnalyticsSuperAdminRoute() {
           <BarChart3 className="h-4 w-4 text-indigo-600" />
           <div>
             <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-              Enterprise Client Leaderboard
+              Top Hostels by Students
             </h4>
             <p className="text-[10px] text-slate-400 font-medium">
-              Top platform customers ranked by localized density of student
-              records
+              Hostels with the highest student count
             </p>
           </div>
         </div>

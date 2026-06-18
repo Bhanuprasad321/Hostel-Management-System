@@ -185,11 +185,10 @@ export default function SettingsRoute() {
       {/* Title contextual row */}
       <div className="border-b border-slate-100 pb-5">
         <h2 className="text-xl font-bold text-slate-800 tracking-tight">
-          Account Parameters
+          Account Settings
         </h2>
         <p className="text-xs text-slate-400 mt-0.5 font-medium">
-          Configure security tokens, core visibility tags, and deployment
-          preferences
+          Manage your profile information and account security
         </p>
       </div>
 
@@ -217,39 +216,39 @@ export default function SettingsRoute() {
         <div className="flex flex-row md:flex-col gap-1 p-1 rounded-xl bg-slate-100/70 md:bg-transparent overflow-x-auto">
           <button
             onClick={() => setActiveTab("profile")}
-            className={`flex items-center gap-2.5 px-3.5 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap w-full justify-start ${
+            className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-bold rounded-lg transition-all whitespace-nowrap w-full justify-start ${
               activeTab === "profile"
                 ? "bg-white md:bg-indigo-600 text-indigo-600 md:text-white shadow-xs"
                 : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
             }`}
           >
             <User className="h-4 w-4 shrink-0" />
-            User Account Profile
+            Profile Information
           </button>
 
           <button
             onClick={() => setActiveTab("password")}
-            className={`flex items-center gap-2.5 px-3.5 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap w-full justify-start ${
+            className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-bold rounded-lg transition-all whitespace-nowrap w-full justify-start ${
               activeTab === "password"
                 ? "bg-white md:bg-indigo-600 text-indigo-600 md:text-white shadow-xs"
                 : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
             }`}
           >
             <Lock className="h-4 w-4 shrink-0" />
-            Security Credentials
+            Password & Security
           </button>
 
           {isHostelAdmin && (
             <button
               onClick={() => setActiveTab("hostel")}
-              className={`flex items-center gap-2.5 px-3.5 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap w-full justify-start ${
+              className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-bold rounded-lg transition-all whitespace-nowrap w-full justify-start ${
                 activeTab === "hostel"
                   ? "bg-white md:bg-indigo-600 text-indigo-600 md:text-white shadow-xs"
                   : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
               }`}
             >
               <Building2 className="h-4 w-4 shrink-0" />
-              Hostel Scope Profile
+              Hostel Settings
             </button>
           )}
         </div>
@@ -268,7 +267,7 @@ export default function SettingsRoute() {
 
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  Account Email Address
+                  Email Address
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
@@ -312,7 +311,7 @@ export default function SettingsRoute() {
                   ) : (
                     <Save className="h-3.5 w-3.5" />
                   )}
-                  Save Identity Profile
+                  Update Profile
                 </button>
               </div>
             </form>
@@ -324,7 +323,7 @@ export default function SettingsRoute() {
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <KeyRound className="h-4 w-4 text-indigo-500" />
                 <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Credential Rotation
+                  Update Password
                 </h3>
               </div>
 
@@ -350,7 +349,7 @@ export default function SettingsRoute() {
 
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                  New Password Selection
+                  New Password
                 </label>
                 <input
                   type="password"
@@ -363,7 +362,7 @@ export default function SettingsRoute() {
                   }
                   required
                   disabled={formLoading}
-                  placeholder="Minimum length requirement limits apply"
+                  placeholder="Enter your new password"
                   className="w-full rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2 text-sm text-slate-700 outline-hidden transition-all focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50/50"
                 />
               </div>
@@ -383,7 +382,7 @@ export default function SettingsRoute() {
                   }
                   required
                   disabled={formLoading}
-                  placeholder="Verify duplicate pass string matches exactly"
+                  placeholder="Re-enter your new password"
                   className="w-full rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2 text-sm text-slate-700 outline-hidden transition-all focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50/50"
                 />
               </div>
@@ -399,7 +398,7 @@ export default function SettingsRoute() {
                   ) : (
                     <ShieldCheck className="h-3.5 w-3.5" />
                   )}
-                  Rotate Password Tokens
+                  Update Password
                 </button>
               </div>
             </form>
@@ -411,13 +410,13 @@ export default function SettingsRoute() {
               <div className="flex items-center gap-2 pb-2 border-b border-slate-50">
                 <Building2 className="h-4 w-4 text-indigo-500" />
                 <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Hostel Node Properties
+                  Hostel Information
                 </h3>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                  Enterprise Hostel Name
+                  Hostel Name
                 </label>
                 <input
                   type="text"
@@ -437,7 +436,7 @@ export default function SettingsRoute() {
 
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                  Physical Address Footprint
+                  Hostel Address
                 </label>
                 <textarea
                   rows={3}
@@ -463,7 +462,7 @@ export default function SettingsRoute() {
                   ) : (
                     <Save className="h-3.5 w-3.5" />
                   )}
-                  Commit Structural Settings
+                  Update Hostel Details
                 </button>
               </div>
             </form>

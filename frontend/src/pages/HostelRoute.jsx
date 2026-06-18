@@ -65,10 +65,10 @@ function CreateHostelModal({ onClose, onCreated }) {
             </div>
             <div>
               <h2 className="text-[15px] font-semibold text-slate-800">
-                New Hostel Asset
+                Add New Hostel
               </h2>
               <p className="text-xs text-slate-400">
-                Initialize a core structural node mapping
+                Register a new hostel on the platform
               </p>
             </div>
           </div>
@@ -90,11 +90,11 @@ function CreateHostelModal({ onClose, onCreated }) {
 
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-slate-700">
-              Hostel Asset Name
+              Hostel Name
             </label>
             <input
               type="text"
-              placeholder="e.g. Royal Crest Housing"
+              placeholder="e.g. Green Valley Hostel"
               value={form.hostel_name}
               onChange={(e) =>
                 setForm({ ...form, hostel_name: e.target.value })
@@ -106,7 +106,7 @@ function CreateHostelModal({ onClose, onCreated }) {
 
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-slate-700">
-              Physical Address Location
+              Hostel Address
             </label>
             <input
               type="text"
@@ -137,7 +137,7 @@ function CreateHostelModal({ onClose, onCreated }) {
               ) : (
                 <Plus className="h-4 w-4" />
               )}
-              {loading ? "Registering..." : "Provision Hostel"}
+              {loading ? "Adding..." : "Add Hostel"}
             </button>
           </div>
         </form>
@@ -161,10 +161,10 @@ function HostelDetailsModal({ hostel, onClose }) {
             </div>
             <div>
               <h2 className="text-[15px] font-semibold text-slate-800">
-                Asset Profile Registry
+                Hostel Details
               </h2>
               <p className="text-xs text-slate-400">
-                Comprehensive structural matrix parameters
+                View hostel information and status
               </p>
             </div>
           </div>
@@ -193,7 +193,7 @@ function HostelDetailsModal({ hostel, onClose }) {
                 {hostel.hostel_name}
               </h3>
               <p className="text-xs text-slate-400 font-medium mt-0.5">
-                Asset Reference ID: #{hostel.id}
+                Hostel ID: #{hostel.id}
               </p>
             </div>
           </div>
@@ -202,7 +202,7 @@ function HostelDetailsModal({ hostel, onClose }) {
           <div className="space-y-3.5 text-sm">
             <div className="flex justify-between items-start py-2.5 border-b border-slate-50">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5" /> Physical Address
+                <MapPin className="h-3.5 w-3.5" /> Address
               </span>
               <span className="text-sm font-medium text-slate-700 text-right max-w-[60%] break-words">
                 {hostel.address}
@@ -211,17 +211,17 @@ function HostelDetailsModal({ hostel, onClose }) {
 
             <div className="flex justify-between items-center py-2.5 border-b border-slate-50">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5" /> Operational Status
+                <ShieldCheck className="h-3.5 w-3.5" /> Status
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-                {hostel.status || "ACTIVE"}
+                {hostel.status}
               </span>
             </div>
 
             <div className="flex justify-between items-center py-2.5">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" /> Timeline Initialization
+                <Clock className="h-3.5 w-3.5" /> Registration Date
               </span>
               <span className="text-sm font-semibold text-slate-800 flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5 text-slate-400" />
@@ -236,7 +236,7 @@ function HostelDetailsModal({ hostel, onClose }) {
               onClick={onClose}
               className="w-full rounded-xl border border-slate-200 py-2.5 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 transition shadow-xs"
             >
-              Dismiss File View
+              Close Details
             </button>
           </div>
         </div>
@@ -305,7 +305,7 @@ export default function HostelsRoute() {
         h.address?.toLowerCase().includes(search.toLowerCase()) ||
         h.id?.toString().includes(search);
 
-      const currentStatus = h.status || "active";
+      const currentStatus = h.status;
       const matchesStatus =
         statusFilter === "all" ||
         currentStatus.toLowerCase() === statusFilter.toLowerCase();
@@ -333,9 +333,8 @@ export default function HostelsRoute() {
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Hostels</h2>
           <p className="mt-1 text-sm text-slate-500">
-            {hostels.length} structural cluster asset
-            {hostels.length !== 1 ? "s" : ""} initialized inside system
-            environment
+            {hostels.length} hostel{hostels.length !== 1 ? "s" : ""} currently
+            registered on the platform
           </p>
         </div>
         <button
@@ -364,16 +363,16 @@ export default function HostelsRoute() {
         {/* Dynamic Status Dropdown Menu Mapping */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <Filter className="h-3 w-3" /> Filter Matrix:
+            <Filter className="h-3 w-3" /> Filter By Status:
           </span>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition cursor-pointer shadow-sm"
           >
-            <option value="all">All Registries</option>
-            <option value="active">Active Placements</option>
-            <option value="inactive">Inactive Nodes</option>
+            <option value="all">All Hostels</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
           </select>
         </div>
       </div>
@@ -413,7 +412,7 @@ export default function HostelsRoute() {
                     className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
                     <div className="flex items-center">
-                      System Index {renderSortIcon("id")}
+                      Hostel {renderSortIcon("id")}
                     </div>
                   </th>
                   <th
@@ -422,7 +421,7 @@ export default function HostelsRoute() {
                     className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
                     <div className="flex items-center">
-                      Hostel Identifier {renderSortIcon("hostel_name")}
+                      Hostel Name {renderSortIcon("hostel_name")}
                     </div>
                   </th>
                   <th
@@ -436,12 +435,9 @@ export default function HostelsRoute() {
                   </th>
                   <th
                     scope="col"
-                    onClick={() => handleSort("status")}
                     className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
-                    <div className="flex items-center">
-                      Status {renderSortIcon("status")}
-                    </div>
+                    <div className="flex items-center">Status</div>
                   </th>
                   <th
                     scope="col"
@@ -449,7 +445,7 @@ export default function HostelsRoute() {
                     className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
                     <div className="flex items-center">
-                      Creation Date {renderSortIcon("created_at")}
+                      Registration Date {renderSortIcon("created_at")}
                     </div>
                   </th>
                 </tr>
@@ -479,9 +475,6 @@ export default function HostelsRoute() {
                       {/* Hostel Profile Identity Node */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-[11px] font-bold text-white group-hover:scale-105 transition-transform">
-                            {initials}
-                          </div>
                           <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors truncate max-w-xs">
                             {h.hostel_name}
                           </span>

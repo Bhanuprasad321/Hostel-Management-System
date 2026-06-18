@@ -154,7 +154,7 @@ export default function NotificationsRoute() {
         <div>
           <h2 className="text-xl font-bold text-slate-800 tracking-tight">Notification Center</h2>
           <p className="text-xs text-slate-400 mt-0.5 font-medium">
-            System transactions, registry warnings, and operational audit alerts
+            Monitor platform events, updates, and operational activities.
           </p>
         </div>
 
