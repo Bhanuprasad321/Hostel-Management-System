@@ -1,0 +1,156 @@
+[33mcommit 6c01b36d21a7d06e2921306559bb40b8d75e87ac[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Thu Jun 18 18:51:40 2026 +0530
+
+    Improved UI/UX for every module and solved some bugs
+
+[33mcommit 606c42a1b38769917b7ff80c41ba6e09eceef22d[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Wed Jun 17 16:34:51 2026 +0530
+
+    Implemented both backend api's and frontend UI for visitors log
+
+[33mcommit 28df80c27b2bfba6ec927eed05c1ea9581322389[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Wed Jun 17 14:22:24 2026 +0530
+
+    Implemented frontend for complaints , both backend api's and frontend for notices module
+
+[33mcommit f34c1425fc830c224ec488f3cbb062f4f1905dbd[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Tue Jun 16 17:00:40 2026 +0530
+
+    Created student portal with dashboard,  allocation details, notifications and changed the landing page UI
+
+[33mcommit 83586e7b9c7eb9cde43ec9509de600051adb2c39[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Tue Jun 16 14:46:09 2026 +0530
+
+    Implemented backend api's for complaints module
+
+[33mcommit 835518c32e04315f90821079df65d1ccc32160fe[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Mon Jun 15 15:22:09 2026 +0530
+
+    Implemented notifications and settings management modules
+
+[33mcommit 5ae4f08ab0b893b83ff82603407f3787ec7f38da[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Sat Jun 13 12:37:52 2026 +0530
+
+    Implement notification system with event tracking and notification APIs
+
+[33mcommit 865f094357705a5cb9b168f857f7a1161dc366b1[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Thu Jun 11 18:44:47 2026 +0530
+
+    Implemented subscription management and audit logging
+
+[33mcommit 086e79db262a39d90093f1f4f2bf702a1a3355f4[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Thu Jun 11 11:25:46 2026 +0530
+
+    Implement subscription-based login access control
+
+[33mcommit 7f6c5c2097a1503950e58e0f32fe71ad0be487f2[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Wed Jun 10 12:11:28 2026 +0530
+
+    Implement admin dashboard, students, rooms and allocation management
+
+[33mcommit 303db8ffac14077a57df43d10b6436b89ba241b6[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Tue Jun 9 17:36:40 2026 +0530
+
+    Implemented subscription management module and frontend
+
+[33mcommit b6e6bd37bb37baaca897ac7851e5477ceb089ddc[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Tue Jun 9 16:31:58 2026 +0530
+
+    Implemented subscription management APIs
+
+[33mcommit 8eeb63a08d93a36bbce06c109453707fa8a635e5[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Mon Jun 8 16:56:31 2026 +0530
+
+    Implement frontend dashboard, students and rooms management
+
+[33mcommit 0722348861bbc0edb990280d7a3370ff929cdc66[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Thu Jun 4 12:00:28 2026 +0530
+
+    Implemented transaction on vacate student function
+
+[33mcommit 082d86da2fa4f904da3e21dfe133079b370d67a6[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Thu Jun 4 11:48:33 2026 +0530
+
+    Implemented transaction for create allocation
+
+[33mcommit 25e787a97676837d92ffc8ea3675c08fec86c94e[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Wed Jun 3 15:54:25 2026 +0530
+
+    Implemented dashboard statistics APIs
+
+[33mcommit 1b6e27b3923dce23d3a4f5c6df3d486c1f418a21[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Wed Jun 3 11:56:23 2026 +0530
+
+    updated the updateRoute logic
+
+[33mcommit 4013a34585f127bd9cf99a087205cc9398d96aee[m
+Merge: 0990ef7 d8a4ff6
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Tue Jun 2 13:02:43 2026 +0530
+
+    Resolve merge conflict and remove password file
+
+[33mcommit 0990ef72df4bcb8152b585e60291c22ae560121a[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Tue Jun 2 12:57:03 2026 +0530
+
+    Implemented student, room and allocation management modules
+
+[33mcommit dd045b9bca878a346a42984fc93aabdf5876f313[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Mon Jun 1 16:20:33 2026 +0530
+
+    Implemented hostel admin and student management modules
+
+[33mcommit d8a4ff607feb26ed2f82392a303e4a37fbd979a6[m
+Author: Bhanuprasad321 <143926744+Bhanuprasad321@users.noreply.github.com>
+Date:   Mon Jun 1 16:06:03 2026 +0530
+
+    Deleted test passwords file
+
+[33mcommit d31511f77a4fd5416a8e0c76b098c873a26e93e6[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Mon Jun 1 14:47:40 2026 +0530
+
+    Implemented hostel admin management APIs
+
+[33mcommit fbcb2c08249a8f32c49496767e5e08a36551b700[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Fri May 29 17:59:59 2026 +0530
+
+    Added hostel retrieval endpoints
+
+[33mcommit bf28402d334a59c6e929486318657be8a7e8ee53[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Fri May 29 17:46:12 2026 +0530
+
+    Implemented hostel creation with super admin authorization
+
+[33mcommit 35a15803f3259f14e9f85eaf5af793b4198eb58f[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Fri May 29 16:40:31 2026 +0530
+
+    Added super admin authorization middleware
+
+[33mcommit df88a9537cc166d494391fa29b0b01935a484bdf[m
+Author: Bhanuprasad321 <kanugulabhanu012@gmail.com>
+Date:   Fri May 29 13:34:52 2026 +0530
+
+    Setup backend architecture and authentication system
