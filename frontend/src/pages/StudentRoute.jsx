@@ -12,6 +12,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Eye,
+  Pencil, // Added Pencil icon for edit action
 } from "lucide-react";
 import api from "../services/api";
 
@@ -52,6 +53,15 @@ export default function Students() {
   const [password, setPassword] = useState("");
   const [formLoading, setFormLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+
+  // Edit Student Form State
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPassword, setEditPassword] = useState("");
+  const [editFormLoading, setEditFormLoading] = useState(false);
+  const [showEditPass, setShowEditPass] = useState(false);
 
   // Student Details State
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -108,6 +118,46 @@ export default function Students() {
     }
   };
 
+  // Open Edit Modal with Pre-loaded Details
+  const handleEditClick = (student) => {
+    setEditId(student.id);
+    setEditName(student.name);
+    setEditEmail(student.email);
+    setEditPassword(""); // Keep blank initially; backend updates dynamically if provided
+    setShowEditPass(false);
+    setOpenEditModal(true);
+  };
+
+  // Update Handler
+  const updateStudentProfile = async (e) => {
+    e.preventDefault();
+    if (!editName && !editEmail && !editPassword) {
+      setError("At least one field is required to update.");
+      return;
+    }
+    try {
+      setEditFormLoading(true);
+      setError("");
+
+      const payload = {};
+      if (editName) payload.name = editName;
+      if (editEmail) payload.email = editEmail;
+      if (editPassword) payload.password = editPassword;
+
+      await api.put(`/students/${editId}`, payload);
+
+      setOpenEditModal(false);
+      fetchStudents();
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+          "Failed to update target student profile context.",
+      );
+    } finally {
+      setEditFormLoading(false);
+    }
+  };
+
   // Profile Drawer Lookups
   const openStudentDetails = async (id) => {
     try {
@@ -122,6 +172,33 @@ export default function Students() {
       );
     } finally {
       setDetailsLoading(false);
+    }
+  };
+
+  // Export CSV Action Handler
+  const exportStudents = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get("/reports/students", {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "students_report.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.log(err);
+      if (err.response && err.response.status === 403) {
+        alert("Upgrade your plan to use this feature");
+      }
     }
   };
 
@@ -150,6 +227,15 @@ export default function Students() {
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </button>
+
+          <button
+            onClick={exportStudents}
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition shadow-sm"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Export CSV
+          </button>
+
           <button
             onClick={() => setOpenAddModal(true)}
             className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition shadow-sm"
@@ -225,6 +311,9 @@ export default function Students() {
             <table className="w-full border-collapse text-left text-sm text-slate-600">
               <thead className="bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <tr>
+                  <th scope="col" className="px-6 py-4 w-16">
+                    ID
+                  </th>
                   <th scope="col" className="px-6 py-4">
                     Student
                   </th>
@@ -237,12 +326,15 @@ export default function Students() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 font-medium">
-                {filteredStudents.map((student) => (
+                {filteredStudents.map((student, index) => (
                   <tr
                     key={student.id}
                     onClick={() => openStudentDetails(student.id)}
                     className="hover:bg-slate-50/60 transition-colors cursor-pointer group"
                   >
+                    <td className="px-6 py-4 whitespace-nowrap text-slate-400 font-normal">
+                      {index + 1}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <div
@@ -259,7 +351,7 @@ export default function Students() {
                       {student.email}
                     </td>
                     <td
-                      className="px-6 py-4 whitespace-nowrap text-right"
+                      className="px-6 py-4 whitespace-nowrap text-right space-x-2"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
@@ -268,6 +360,14 @@ export default function Students() {
                       >
                         <Eye className="h-3 w-3" />
                         View
+                      </button>
+
+                      <button
+                        onClick={() => handleEditClick(student)}
+                        className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-sm"
+                      >
+                        <Pencil className="h-3 w-3" />
+                        Edit
                       </button>
                     </td>
                   </tr>
@@ -319,7 +419,7 @@ export default function Students() {
                     placeholder="e.g. Adarsh Sharma"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -337,7 +437,7 @@ export default function Students() {
                     placeholder="e.g. adarsh@gmail.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -355,7 +455,7 @@ export default function Students() {
                     placeholder="Assign operational credential string"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-16 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-16 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                   <button
@@ -388,6 +488,126 @@ export default function Students() {
                     <Plus className="h-4 w-4" />
                   )}
                   {formLoading ? "Saving Profile..." : "Create Student"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Edit Student Modal ─── */}
+      {openEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 animate-fadeIn">
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-100">
+                  <Pencil className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div>
+                  <h2 className="text-[15px] font-semibold text-slate-800">
+                    Modify Student Profile
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Update student account information
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setOpenEditModal(false)}
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Form Content */}
+            <form
+              onSubmit={updateStudentProfile}
+              className="px-6 py-5 space-y-4"
+            >
+              {/* Full Name */}
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-slate-700">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                  />
+                </div>
+              </div>
+
+              {/* Email Address */}
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-slate-700">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-slate-700">
+                  Password{" "}
+                  <span className="text-xs text-slate-400 font-normal">
+                    (Leave blank to keep unchanged)
+                  </span>
+                </label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type={showEditPass ? "text" : "password"}
+                    placeholder="Enter new password if updating"
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-16 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPass((v) => !v)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-medium text-indigo-500 hover:text-indigo-700"
+                  >
+                    {showEditPass ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Actions Footer */}
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-50 mt-5">
+                <button
+                  type="button"
+                  onClick={() => setOpenEditModal(false)}
+                  className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editFormLoading}
+                  className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60 transition-colors shadow-sm"
+                >
+                  {editFormLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Pencil className="h-4 w-4" />
+                  )}
+                  {editFormLoading ? "Updating Profile..." : "Save Changes"}
                 </button>
               </div>
             </form>

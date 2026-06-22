@@ -52,8 +52,15 @@ function UpgradeModal({ plan, onClose, onConfirmed }) {
   const handleConfirm = async () => {
     setLoading(true);
     setError("");
+
     try {
       await api.put(`/subscriptions/${plan.id}/purchase`);
+
+      // Refresh current subscription
+      const planRes = await api.get("/subscriptions/current");
+
+      localStorage.setItem("features", JSON.stringify(planRes.data.features));
+
       onConfirmed();
       onClose();
     } catch (err) {
@@ -119,6 +126,8 @@ function UpgradeModal({ plan, onClose, onConfirmed }) {
 
 // ─── Plan card ───────────────────────────────────────────────
 function PlanCard({ plan, isCurrent, onUpgrade }) {
+  const isTrialPlan = plan.name?.toLowerCase().includes("trial");
+
   return (
     <div
       className={`relative flex flex-col rounded-2xl border p-6 transition-all ${
@@ -161,17 +170,19 @@ function PlanCard({ plan, isCurrent, onUpgrade }) {
         ))}
       </div>
 
-      <button
-        disabled={isCurrent}
-        onClick={() => onUpgrade(plan)}
-        className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
-          isCurrent
-            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-            : "bg-indigo-600 text-white hover:bg-indigo-500"
-        }`}
-      >
-        {isCurrent ? "Current Plan" : "Upgrade"}
-      </button>
+      {(isCurrent || !isTrialPlan) && (
+        <button
+          disabled={isCurrent}
+          onClick={() => onUpgrade(plan)}
+          className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+            isCurrent
+              ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+              : "bg-indigo-600 text-white hover:bg-indigo-500"
+          }`}
+        >
+          {isCurrent ? "Current Plan" : "Upgrade"}
+        </button>
+      )}
     </div>
   );
 }

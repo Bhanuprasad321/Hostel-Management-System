@@ -13,6 +13,7 @@ import {
   Inbox,
   X,
   Users,
+  Download,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -36,6 +37,7 @@ export default function VisitorsPage() {
 
   // State mapping for operational inline mutation loads
   const [mutatingId, setMutatingId] = useState(null);
+  const [exportLoading, setExportLoading] = useState(false);
 
   // Synchronize visitors registry from database endpoints
   const fetchVisitors = async () => {
@@ -81,6 +83,69 @@ export default function VisitorsPage() {
     }
   }, [isModalOpen]);
 
+  // Safely close modal and reset form inputs/errors
+  const closeModal = () => {
+    if (formLoading) return;
+    setStudentId("");
+    setVisitorName("");
+    setVisitorPhone("");
+    setPurpose("");
+    setFormError("");
+    setIsModalOpen(false);
+  };
+
+  // Handle Export Report CSV Pipeline with subscription/error unpacking
+  const handleExportCSV = async () => {
+    try {
+      setExportLoading(true);
+
+      // Axios request configuration specifying response data type mapping for binary streams
+      const response = await api.get("/reports/visitors", {
+        responseType: "blob",
+      });
+
+      // Use response.data directly since responseType is already 'blob'
+      const blobUrl = window.URL.createObjectURL(response.data);
+      const anchorElement = document.createElement("a");
+      anchorElement.href = blobUrl;
+      anchorElement.setAttribute("download", "visitors_report.csv");
+
+      document.body.appendChild(anchorElement);
+      anchorElement.click();
+
+      // Clear layout allocations safely
+      anchorElement.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Failed to commit visitor report stream download:", err);
+
+      let errorMessage =
+        "Could not process and extract the csv spreadsheet data matrix.";
+
+      // Extract specific JSON backend message from the Blob stream wrapper
+      if (err.response?.data instanceof Blob) {
+        try {
+          const textContent = await err.response.data.text();
+          const parsedError = JSON.parse(textContent);
+          if (parsedError.message) {
+            errorMessage = parsedError.message;
+          }
+        } catch (parseException) {
+          console.error(
+            "Failed to translate blob stream logs into error entities:",
+            parseException,
+          );
+        }
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+
+      alert(errorMessage);
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   // Handle New Entry Submission
   const handleRegisterVisitor = async (e) => {
     e.preventDefault();
@@ -107,12 +172,8 @@ export default function VisitorsPage() {
         purpose: purpose.trim(),
       });
 
-      // Clear operational forms completely
-      setStudentId("");
-      setVisitorName("");
-      setVisitorPhone("");
-      setPurpose("");
-      setIsModalOpen(false);
+      // Completely clear operational forms and close gateway
+      closeModal();
       fetchVisitors();
     } catch (err) {
       console.error("Failed to commit visitor log payload:", err);
@@ -210,18 +271,34 @@ export default function VisitorsPage() {
               Active Visitors: {liveActiveInside}
             </div>
           </div>
-          <p className="text-xs  text-slate-500 tracking-wide">
+          <p className="text-xs text-slate-500 tracking-wide">
             Track and manage hostel visitor entries
           </p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all duration-200 shadow-3xs uppercase tracking-wider cursor-pointer"
-        >
-          <Plus className="h-4 w-4 stroke-[2.5]" />
-          Add Visitor
-        </button>
+        {/* Action Button Integration Matrix Group */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExportCSV}
+            disabled={exportLoading || visitors.length === 0}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all duration-200 shadow-3xs uppercase tracking-wider cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+          >
+            {exportLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+            ) : (
+              <Download className="h-4 w-4 text-slate-500" />
+            )}
+            Export CSV
+          </button>
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all duration-200 shadow-3xs uppercase tracking-wider cursor-pointer"
+          >
+            <Plus className="h-4 w-4 stroke-[2.5]" />
+            Add Visitor
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -350,7 +427,7 @@ export default function VisitorsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
-            onClick={() => !formLoading && setIsModalOpen(false)}
+            onClick={closeModal}
           />
 
           <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-xl border border-slate-100 p-6 space-y-5 animate-fade-in">
@@ -362,7 +439,7 @@ export default function VisitorsPage() {
                 </h3>
               </div>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={closeModal}
                 disabled={formLoading}
                 className="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition disabled:opacity-50 cursor-pointer"
               >
@@ -406,7 +483,6 @@ export default function VisitorsPage() {
                         </option>
                       ))}
                     </select>
-                    {/* Native dropdown chevron custom spacing integration override wrapper */}
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
                       <svg
                         className="fill-current h-4 w-4"
@@ -451,7 +527,6 @@ export default function VisitorsPage() {
                     disabled={formLoading}
                     value={visitorPhone}
                     onChange={(e) => {
-                      // Allows an optional leading '+' followed exclusively by numerical digits
                       const cleanedValue = e.target.value.replace(
                         /(?!^\+)[^\d]/g,
                         "",
@@ -485,7 +560,7 @@ export default function VisitorsPage() {
                 <button
                   type="button"
                   disabled={formLoading}
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={closeModal}
                   className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-black text-slate-500 bg-white hover:bg-slate-50 transition uppercase tracking-wider cursor-pointer"
                 >
                   Cancel

@@ -10,7 +10,6 @@ import HomePage from "./pages/HomePage";
 import Layout from "./pages/Layout";
 import HostelsRoute from "./pages/HostelRoute";
 import AdminRoute from "./pages/AdminRoute";
-import SubscriptionRoute from "./pages/SubscriptionsRoute";
 import AllocationsRoute from "./pages/AllocationsRoute";
 import AuditLogs from "./pages/AuditLogs";
 import NotificationsRoute from "./pages/NotificationsRoute";
@@ -23,6 +22,10 @@ import NoticesPage from "./pages/NoticesPage";
 import ComplaintsPage from "./pages/ComplaintsPage";
 import ProfilePage from "./pages/ProfilePage";
 import VisitorsPage from "./pages/VisitorsPage";
+import SuperAdminSubscriptions from "./pages/SuperAdminSubscriptionsPage";
+import AdminSubscriptionsPage from "./pages/AdminSubscriptionsPage";
+import BusinessInsightsPage from "./pages/BusinessInsightsPage";
+import SupportTicketsPage from "./pages/SupportTicketsPage";
 
 function App() {
   return (
@@ -43,7 +46,6 @@ function App() {
             <Route path="/allocation-details" element={<AllocationDetails />} />
             <Route path="/students" element={<Students />} />
             <Route path="/rooms" element={<RoomRoute />} />
-            <Route path="/subscriptions" element={<SubscriptionRoute />} />
             <Route path="/allocations" element={<AllocationsRoute />} />
             <Route path="/audit-logs" element={<AuditLogs />} />
             <Route path="/notifications" element={<NotificationsRoute />} />
@@ -52,11 +54,24 @@ function App() {
             <Route path="/complaints" element={<ComplaintsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/visitors" element={<VisitorsPage />} />
+            <Route path="/support-tickets" element={<SupportTicketsPage />} />
+            <Route
+              path="/super-admin/subscriptions"
+              element={<SuperAdminSubscriptions />}
+            />
+            <Route
+              path="/admin/subscriptions"
+              element={<AdminSubscriptionsPage />}
+            />
             <Route
               path="/super-admin/analytics"
               element={<AnalyticsSuperAdminRoute />}
             />
             <Route path="/admin/analytics" element={<AnalyticsAdminRoute />} />
+            <Route
+              path="/business-insights"
+              element={<BusinessInsightsPage />}
+            />
           </Route>
         </Route>
       </Routes>

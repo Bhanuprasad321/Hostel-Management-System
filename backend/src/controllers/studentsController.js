@@ -120,10 +120,96 @@ const getStudentsDropdown = async (req, res) => {
   }
 };
 
+const updateStudent = async (req, res) => {
+  try {
+    const student_id = parseInt(req.params.id);
+    const hostel_id = parseInt(req.user.hostel_id);
+    const { name, email, password } = req.body;
+
+    // At least one field must be provided
+    if (!name && !email && !password) {
+      return res
+        .status(400)
+        .json({ message: "At least one field is required to update" });
+    }
+
+    // Confirm the student exists and belongs to this hostel
+    const [student] = await db
+      .promise()
+      .query(
+        "SELECT * FROM users WHERE id = ? AND hostel_id = ? AND role = 'student'",
+        [student_id, hostel_id],
+      );
+
+    if (student.length === 0) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // If email is being changed, check it isn't taken by another user
+    if (email && email !== student[0].email) {
+      const [dupEmail] = await db
+        .promise()
+        .query("SELECT * FROM users WHERE email = ? AND id != ?", [
+          email,
+          student_id,
+        ]);
+      if (dupEmail.length !== 0) {
+        return res
+          .status(409)
+          .json({ message: "User with entered email already exists" });
+      }
+    }
+
+    // Build update fields dynamically — only touch what was provided
+    const fields = [];
+    const values = [];
+
+    if (name) {
+      fields.push("name = ?");
+      values.push(name);
+    }
+    if (email) {
+      fields.push("email = ?");
+      values.push(email);
+    }
+    if (password) {
+      const hashedPass = await bcrypt.hash(password, 10);
+      fields.push("password = ?");
+      values.push(hashedPass);
+    }
+
+    values.push(student_id, hostel_id);
+
+    await db
+      .promise()
+      .query(
+        `UPDATE users SET ${fields.join(", ")} WHERE id = ? AND hostel_id = ?`,
+        values,
+      );
+
+    await createAuditLog(
+      hostel_id,
+      req.user.id,
+      `Updated student ${student[0].name}`,
+    );
+    await createNotification(
+      hostel_id,
+      req.user.id,
+      "Student Updated",
+      `${student[0].name}'s details were updated`,
+    );
+
+    return res.status(200).json({ message: "Student updated successfully" });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   createStudent,
   getStudents,
   getStudentDetails,
   getAllocationDetails,
   getStudentsDropdown,
+  updateStudent,
 };

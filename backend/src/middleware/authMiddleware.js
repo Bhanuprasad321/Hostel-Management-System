@@ -47,4 +47,59 @@ const studentOnly = (req, res, next) => {
   }
 };
 
-module.exports = { protect, adminOnly, superAdminOnly, studentOnly };
+const checkFeature = (featureName) => {
+  return async (req, res, next) => {
+    try {
+      if (req.user.role === "super_admin") {
+        return next();
+      }
+      const hostel_id = req.user.hostel_id;
+
+      const [subscription] = await db.promise().query(
+        `
+        SELECT p.features
+        FROM subscriptions s
+        JOIN subscription_plans p
+        ON s.plan_id = p.id
+        WHERE s.hostel_id = ?
+        AND (s.status = 'active' OR s.status = 'trial')
+        LIMIT 1
+        `,
+        [hostel_id],
+      );
+
+      if (subscription.length === 0) {
+        return res.status(403).json({
+          message: "No active subscription found",
+        });
+      }
+
+      let features = subscription[0].features;
+
+      if (typeof features === "string") {
+        features = JSON.parse(features);
+      }
+
+      if (!features.includes(featureName)) {
+        return res.status(403).json({
+          message: "Upgrade your plan to access this feature",
+        });
+      }
+
+      next();
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: "Internal server error",
+      });
+    }
+  };
+};
+
+module.exports = {
+  protect,
+  adminOnly,
+  superAdminOnly,
+  studentOnly,
+  checkFeature,
+};

@@ -41,17 +41,34 @@ export default function AnalyticsAdminRoute() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // ─── Frontend Subscription & Feature Access Validation ───
+    try {
+      const features = JSON.parse(localStorage.getItem("features") || "[]");
+
+      if (!features.includes("analytics")) {
+        setError("Upgrade your plan to access this feature");
+        setLoading(false); // ✨ FIX: Turn loading off here!
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Unable to verify subscription features");
+      setLoading(false);
+      return;
+    }
+
     const fetchHostelAnalytics = async () => {
       try {
         setLoading(true);
         setError("");
-        // Targets app.use("/api/dashboard", dashBoardRoutes) -> route.get('/hostel-admin'...)
         const res = await api.get("/dashboard/hostel-admin");
+        console.log(res.data);
         setStats(res.data);
       } catch (err) {
         console.error("Hostel analytics stream failure:", err);
         setError(
-          "Failed to map dynamic hostel telemetry from backend cloud nodes.",
+          err.response?.data?.message ||
+            "Failed to map dynamic hostel telemetry from backend cloud nodes.",
         );
       } finally {
         setLoading(false);
@@ -72,13 +89,41 @@ export default function AnalyticsAdminRoute() {
     );
   }
 
-  if (error || !stats) {
+  if (error) {
     return (
       <div className="rounded-xl bg-red-50 border border-red-100 p-4 text-sm text-red-600 flex items-center gap-2">
         <ShieldAlert className="h-4 w-4 shrink-0" />
-        <span className="font-semibold">
-          {error || "Data collection rejected."}
-        </span>
+        <span className="font-semibold">{error}</span>
+      </div>
+    );
+  }
+
+  // ✨ FIX PART: Prevent layout calculations and empty graphs if no rooms exist yet
+  if (!stats || stats.total_rooms === 0) {
+    return (
+      <div className="space-y-8 bg-slate-50/40 p-6 min-h-screen antialiased">
+        <div className="border-b border-slate-100 pb-5">
+          <h2 className="text-xl font-bold text-slate-800 tracking-tight">
+            Hostel Analytics
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5 font-medium">
+            View hostel occupancy, room availability, and student distribution.
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center justify-center p-16 bg-white border border-dashed border-slate-200 rounded-2xl text-center shadow-3xs max-w-xl mx-auto mt-12">
+          <div className="p-4 bg-indigo-50 text-indigo-600 rounded-2xl mb-4">
+            <BarChart3 className="h-8 w-8" />
+          </div>
+          <h3 className="text-base font-bold text-slate-800">
+            No Analytics Data Available
+          </h3>
+          <p className="text-sm text-slate-400 mt-1 max-w-sm">
+            This hostel doesn't have any registered rooms or students. Once you
+            configure your rooms and assign allocations, interactive data
+            analytics will update here automatically.
+          </p>
+        </div>
       </div>
     );
   }
@@ -131,7 +176,6 @@ export default function AnalyticsAdminRoute() {
   };
 
   // Chart 3 & 5: Operational Room Distribution Metrics (Top Occupied & Density Vectors)
-  // Maps onto dynamic items array to display your local architectural structures cleanly
   const mockRoomLabels = [
     "Room 101",
     "Room 102",
@@ -145,7 +189,7 @@ export default function AnalyticsAdminRoute() {
     datasets: [
       {
         label: "Occupancy Rate (%)",
-        data: [100, 80, 75, 60, 50], // Maps percentage density benchmarks
+        data: [100, 80, 75, 60, 50],
         backgroundColor: "rgba(239, 68, 68, 0.75)", // Alert Crimson Red
         borderColor: "#ef4444",
         borderWidth: 1,
@@ -159,7 +203,7 @@ export default function AnalyticsAdminRoute() {
     datasets: [
       {
         label: "Assigned Students",
-        data: [5, 4, 3, 3, 2], // Direct count allocations mapping
+        data: [5, 4, 3, 3, 2],
         backgroundColor: "rgba(6, 182, 212, 0.75)", // Cyan Core Blue
         borderColor: "#06b6d4",
         borderWidth: 1,

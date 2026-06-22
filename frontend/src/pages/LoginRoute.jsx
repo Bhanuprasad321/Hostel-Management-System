@@ -22,10 +22,19 @@ const LoginPage = () => {
         email,
         password,
       });
+
       const user = res.data.user;
-      console.log(user);
+
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(user));
+
+      // Only admins need subscription features
+      if (user.role === "admin") {
+        const planRes = await api.get("/subscriptions/current");
+
+        localStorage.setItem("features", JSON.stringify(planRes.data.features));
+      }
+
       if (user.role === "super_admin") {
         navigate("/super-admin");
       } else if (user.role === "admin") {

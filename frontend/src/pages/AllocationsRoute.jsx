@@ -14,6 +14,7 @@ import {
   History,
   ShieldAlert,
   Eye,
+  Download, // Added Download icon
 } from "lucide-react";
 import api from "../services/api";
 
@@ -30,6 +31,7 @@ export default function AllocationsRoute() {
   const [formLoading, setFormLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [rooms, setRooms] = useState([]);
+
   // Allocation Details Drawer State
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsLoading, setDetailsLoading] = useState(false);
@@ -37,6 +39,9 @@ export default function AllocationsRoute() {
 
   // Inline action state to track which row is updating
   const [processingId, setProcessingId] = useState(null);
+
+  // Export Report State
+  const [exportLoading, setExportLoading] = useState(false);
 
   // Fetch Core Dataset
   const fetchAllocations = async () => {
@@ -62,6 +67,7 @@ export default function AllocationsRoute() {
     fetchAllocations();
     fetchFormData();
   }, []);
+
   const fetchFormData = async () => {
     try {
       const [studentsRes, roomsRes] = await Promise.all([
@@ -75,6 +81,7 @@ export default function AllocationsRoute() {
       console.log(err);
     }
   };
+
   // Creation Handler
   const createAllocation = async (e) => {
     e.preventDefault();
@@ -143,6 +150,52 @@ export default function AllocationsRoute() {
     }
   };
 
+  // Export CSV Report Handler
+  const handleExportCSV = async () => {
+    try {
+      setExportLoading(true);
+      setError("");
+
+      // Request file stream parsing via blob assignment type
+      const response = await api.get("/reports/allocations", {
+        responseType: "blob",
+      });
+
+      // Setup dynamic structural link download configuration
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "allocations_report.csv");
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean target runtime reference frames
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      // Handle server error payloads when responseType is 'blob'
+      if (err.response?.data instanceof Blob) {
+        try {
+          const text = await err.response.data.text();
+          const parsedError = JSON.parse(text);
+          setError(
+            parsedError.message ||
+              "Failed to download allocations system CSV statement.",
+          );
+        } catch (_) {
+          setError("Failed to download allocations system CSV statement.");
+        }
+      } else {
+        setError(
+          err?.response?.data?.message ||
+            "Failed to download allocations system CSV statement.",
+        );
+      }
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   // Search Filter parsing (Checks room ID, student ID, or live status text)
   const filteredAllocations = allocations.filter((item) => {
     const sTerm = search.toLowerCase();
@@ -178,6 +231,21 @@ export default function AllocationsRoute() {
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </button>
+
+          {/* Export CSV Report Button */}
+          <button
+            onClick={handleExportCSV}
+            disabled={exportLoading}
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition shadow-sm disabled:opacity-60"
+          >
+            {exportLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+            ) : (
+              <Download className="h-4 w-4 text-slate-500" />
+            )}
+            Export CSV
+          </button>
+
           <button
             onClick={() => setOpenAddModal(true)}
             className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition shadow-sm"
@@ -405,7 +473,6 @@ export default function AllocationsRoute() {
 
             {/* Form Content */}
             <form onSubmit={createAllocation} className="px-6 py-5 space-y-4">
-              {/* Student System ID */}
               {/* Student Selection */}
               <div className="space-y-1.5">
                 <label className="block text-sm font-medium text-slate-700">
@@ -521,7 +588,7 @@ export default function AllocationsRoute() {
                 <div className="flex flex-col items-center justify-center py-12 space-y-3">
                   <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
                   <p className="text-xs text-slate-400">
-                    Loading Alocation Details...
+                    Loading Allocation Details...
                   </p>
                 </div>
               ) : selectedAllocation ? (

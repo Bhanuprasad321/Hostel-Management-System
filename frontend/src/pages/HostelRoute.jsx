@@ -14,6 +14,8 @@ import {
   Info,
   ShieldCheck,
   Clock,
+  Eye,
+  Pencil,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -28,15 +30,40 @@ function formatDate(iso) {
 
 // ─── Create Hostel Modal ──────────────────────────────────────
 function CreateHostelModal({ onClose, onCreated }) {
-  const [form, setForm] = useState({ hostel_name: "", address: "" });
+  const [form, setForm] = useState({
+    hostel_name: "",
+    address: "",
+    plan_id: "",
+  });
+  const [plans, setPlans] = useState([]);
+  const [loadingPlans, setLoadingPlans] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      setLoadingPlans(true);
+      try {
+        const res = await api.get("/plans/");
+        const plansData = Array.isArray(res.data) ? res.data : [];
+        setPlans(plansData);
+        if (plansData.length > 0) {
+          setForm((prev) => ({ ...prev, plan_id: plansData[0].id.toString() }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch subscription plans:", err);
+      } finally {
+        setLoadingPlans(false);
+      }
+    };
+    fetchPlans();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!form.hostel_name.trim() || !form.address.trim()) {
-      setError("Both fields are mandatory system keys.");
+    if (!form.hostel_name.trim() || !form.address.trim() || !form.plan_id) {
+      setError("All fields are mandatory system keys.");
       return;
     }
     setLoading(true);
@@ -118,6 +145,42 @@ function CreateHostelModal({ onClose, onCreated }) {
             />
           </div>
 
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-slate-700">
+              Subscription Plan
+            </label>
+            <div className="relative">
+              <select
+                value={form.plan_id}
+                onChange={(e) => setForm({ ...form, plan_id: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition cursor-pointer appearance-none"
+                required
+                disabled={loadingPlans}
+              >
+                {loadingPlans ? (
+                  <option value="">Loading subscriptions...</option>
+                ) : plans.length === 0 ? (
+                  <option value="">No plans available</option>
+                ) : (
+                  plans.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.duration_days} Days - ₹{p.price})
+                    </option>
+                  ))
+                )}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                <svg
+                  className="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-50 mt-5">
             <button
@@ -129,7 +192,7 @@ function CreateHostelModal({ onClose, onCreated }) {
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || loadingPlans}
               className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60 transition shadow-sm"
             >
               {loading ? (
@@ -245,12 +308,132 @@ function HostelDetailsModal({ hostel, onClose }) {
   );
 }
 
+// ─── Edit Hostel Modal ─────────────────────────────────────────
+function EditHostelModal({ hostel, onClose, onUpdated }) {
+  const [form, setForm] = useState({
+    hostel_name: hostel.hostel_name || "",
+    address: hostel.address || "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!form.hostel_name.trim() && !form.address.trim()) {
+      setError("At least one field is required to update.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await api.put(`/hostels/${hostel.id}`, form);
+      onUpdated();
+      onClose();
+    } catch (err) {
+      setError(err.response?.data?.message ?? "Failed to update hostel.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 animate-fadeIn">
+      <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden border border-slate-100">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-100">
+              <Pencil className="h-5 w-5 text-indigo-600" />
+            </div>
+            <div>
+              <h2 className="text-[15px] font-semibold text-slate-800">
+                Edit Hostel
+              </h2>
+              <p className="text-xs text-slate-400">
+                Update details for #{hostel.id}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+          {error && (
+            <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600 animate-fadeIn">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-slate-700">
+              Hostel Name
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Green Valley Hostel"
+              value={form.hostel_name}
+              onChange={(e) =>
+                setForm({ ...form, hostel_name: e.target.value })
+              }
+              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-slate-700">
+              Hostel Address
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Gachibowli, Hyderabad"
+              value={form.address}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-50 mt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60 transition shadow-sm"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Pencil className="h-4 w-4" />
+              )}
+              {loading ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────
 export default function HostelsRoute() {
   const [hostels, setHostels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedHostel, setSelectedHostel] = useState(null);
+  const [editHostel, setEditHostel] = useState(null);
 
   // Filtering & Sorting configuration states
   const [search, setSearch] = useState("");
@@ -388,14 +571,14 @@ export default function HostelsRoute() {
           <p className="text-sm font-medium text-slate-500">
             {search || statusFilter !== "all"
               ? "No asset configurations match parameters"
-              : "No hostel assets configured inside engine"}
+              : "No Hostels Created"}
           </p>
           {!search && statusFilter === "all" && (
             <button
               onClick={() => setShowModal(true)}
               className="mt-4 text-sm font-medium text-indigo-600 hover:underline"
             >
-              Create your first hostel node →
+              Create your first hostel
             </button>
           )}
         </div>
@@ -433,10 +616,7 @@ export default function HostelsRoute() {
                       Hostel Address {renderSortIcon("address")}
                     </div>
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors"
-                  >
+                  <th scope="col" className="px-6 py-4">
                     <div className="flex items-center">Status</div>
                   </th>
                   <th
@@ -448,34 +628,29 @@ export default function HostelsRoute() {
                       Registration Date {renderSortIcon("created_at")}
                     </div>
                   </th>
+                  <th scope="col" className="px-6 py-4">
+                    <div className="flex items-center">Actions</div>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 font-medium">
-                {processedHostels.map((h) => {
-                  const initials =
-                    h.hostel_name
-                      ?.split(" ")
-                      .map((w) => w[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2) || "H";
+                {processedHostels.map((h, index) => {
                   const currentStatus = h.status || "Active";
 
                   return (
                     <tr
                       key={h.id}
-                      onClick={() => setSelectedHostel(h)}
-                      className="hover:bg-slate-50/60 transition-colors cursor-pointer group"
+                      className="hover:bg-slate-50/60 transition-colors group"
                     >
                       {/* ID Index code */}
                       <td className="px-6 py-4 whitespace-nowrap text-slate-400 font-normal">
-                        # {h.id}
+                        {index + 1}
                       </td>
 
                       {/* Hostel Profile Identity Node */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors truncate max-w-xs">
+                          <span className="font-semibold text-slate-800 truncate max-w-xs">
                             {h.hostel_name}
                           </span>
                         </div>
@@ -512,6 +687,26 @@ export default function HostelsRoute() {
                           <span>{formatDate(h.created_at)}</span>
                         </div>
                       </td>
+
+                      {/* Actions column */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setSelectedHostel(h)}
+                            title="View details"
+                            className="flex items-center justify-center h-8 w-8 rounded-lg text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => setEditHostel(h)}
+                            title="Edit hostel"
+                            className="flex items-center justify-center h-8 w-8 rounded-lg text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}
@@ -534,6 +729,15 @@ export default function HostelsRoute() {
         <HostelDetailsModal
           hostel={selectedHostel}
           onClose={() => setSelectedHostel(null)}
+        />
+      )}
+
+      {/* Edit Hostel Modal */}
+      {editHostel && (
+        <EditHostelModal
+          hostel={editHostel}
+          onClose={() => setEditHostel(null)}
+          onUpdated={fetchHostels}
         />
       )}
     </div>

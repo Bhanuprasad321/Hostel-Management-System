@@ -16,6 +16,7 @@ import {
   ArrowUp,
   ArrowDown,
   Filter,
+  Eye,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -483,14 +484,8 @@ export default function AdminRoute() {
             <table className="w-full border-collapse text-left text-sm text-slate-600">
               <thead className="bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider select-none">
                 <tr>
-                  <th
-                    scope="col"
-                    onClick={() => handleSort("id")}
-                    className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors w-32"
-                  >
-                    <div className="flex items-center">
-                      Hostel ID {renderSortIcon("id")}
-                    </div>
+                  <th scope="col" className="px-6 py-4 w-32">
+                    <div className="flex items-center">S.No</div>
                   </th>
                   <th
                     scope="col"
@@ -516,32 +511,30 @@ export default function AdminRoute() {
                   >
                     Role
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-4 select-none text-slate-400 font-medium"
+                  >
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 font-medium">
-                {processedAdmins.map((admin) => (
+                {processedAdmins.map((admin, index) => (
                   <tr
                     key={admin.id}
-                    onClick={() => setSelectedAdmin(admin)}
-                    className="hover:bg-slate-50/60 transition-colors cursor-pointer group"
+                    className="hover:bg-slate-50/60 transition-colors group"
                   >
-                    {/* Index identifier code */}
+                    {/* Display index, real admin.id stays in state/flow */}
                     <td className="px-6 py-4 whitespace-nowrap text-slate-400 font-normal">
-                      # {admin.id}
+                      {index + 1}
                     </td>
 
-                    {/* Administrator visual anchor node */}
+                    {/* Administrator name only, no avatar */}
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${avatarColor(admin.id)} text-[11px] font-bold text-white group-hover:scale-105 transition-transform shadow-xs`}
-                        >
-                          {getInitials(admin.name)}
-                        </div>
-                        <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors truncate max-w-xs">
-                          {admin.name}
-                        </span>
-                      </div>
+                      <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors truncate max-w-xs">
+                        {admin.name}
+                      </span>
                     </td>
 
                     {/* Direct email parameters cell link */}
@@ -556,6 +549,17 @@ export default function AdminRoute() {
                       <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
                         Admin
                       </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => setSelectedAdmin(admin)}
+                        title="View details"
+                        className="flex items-center justify-center h-8 w-8 rounded-lg text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
                     </td>
                   </tr>
                 ))}

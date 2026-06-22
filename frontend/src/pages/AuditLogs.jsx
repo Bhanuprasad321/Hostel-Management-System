@@ -5,11 +5,8 @@ import {
   ArrowUp,
   ArrowDown,
   Clock,
-  Building2,
-  User,
   Activity,
   Loader2,
-  SlidersHorizontal,
 } from "lucide-react";
 import api from "../services/api"; // Adjust file hierarchy matching your app layout
 
@@ -21,7 +18,7 @@ export default function AuditLogs() {
   // Search & Filter Matrix States
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({
-    key: "created_at",
+    key: "id",
     direction: "desc",
   });
 
@@ -36,7 +33,6 @@ export default function AuditLogs() {
         // Directing GET call directly to your target core API layout
         const res = await api.get("http://localhost:2000/api/audit-logs");
         setLogs(res.data);
-        setFilteredLogs(res.data);
       } catch (err) {
         console.error("Audit log processing pipeline breakdown:", err);
       } finally {
@@ -65,6 +61,12 @@ export default function AuditLogs() {
       output.sort((a, b) => {
         let valA = a[sortConfig.key] || "";
         let valB = b[sortConfig.key] || "";
+
+        if (sortConfig.key === "id") {
+          return sortConfig.direction === "asc"
+            ? Number(a.id) - Number(b.id)
+            : Number(b.id) - Number(a.id);
+        }
 
         if (sortConfig.key === "created_at") {
           return sortConfig.direction === "asc"
@@ -178,14 +180,9 @@ export default function AuditLogs() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/80 border-b border-slate-100">
-                {/* ID Header */}
-                <th
-                  onClick={() => requestSort("id")}
-                  className="group px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer select-none transition-colors hover:bg-slate-100/60 w-20"
-                >
-                  <div className="flex items-center gap-1.5">
-                    ID {getSortIcon("id")}
-                  </div>
+                {/* Index Header — displays 1..n, not the DB id */}
+                <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider select-none w-20">
+                  <div className="flex items-center">#</div>
                 </th>
 
                 {/* Hostel Name Header */}
@@ -194,7 +191,7 @@ export default function AuditLogs() {
                   className="group px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer select-none transition-colors hover:bg-slate-100/60"
                 >
                   <div className="flex items-center gap-1.5">
-                    Hostel{getSortIcon("hostel_name")}
+                    Hostel {getSortIcon("hostel_name")}
                   </div>
                 </th>
 
@@ -224,7 +221,7 @@ export default function AuditLogs() {
                   className="group px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer select-none transition-colors hover:bg-slate-100/60"
                 >
                   <div className="flex items-center gap-1.5">
-                    created_at {getSortIcon("created_at")}
+                    Timestamp {getSortIcon("created_at")}
                   </div>
                 </th>
               </tr>
@@ -241,38 +238,30 @@ export default function AuditLogs() {
                   </td>
                 </tr>
               ) : (
-                currentItems.map((log) => (
+                currentItems.map((log, index) => (
                   <tr
                     key={log.id}
                     className="hover:bg-slate-50/50 transition-colors group"
                   >
-                    {/* Log ID */}
+                    {/* Display index; log.id stays on key and is available if needed */}
                     <td className="px-6 py-4 text-xs font-mono font-bold text-slate-400">
-                      {log.id}
+                      {indexOfFirstItem + index + 1}
                     </td>
 
                     {/* Hostel Scope */}
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                          <Building2 className="h-3.5 w-3.5" />
-                        </div>
-                        <span className="text-sm font-semibold text-slate-700">
-                          {log.role === "super_admin" ? "-" : (log.hostel_name || "-")}
-                        </span>
-                      </div>
+                      <span className="text-sm font-semibold text-slate-700">
+                        {log.role === "super_admin"
+                          ? "-"
+                          : log.hostel_name || "-"}
+                      </span>
                     </td>
 
                     {/* Operator Account Identity */}
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
-                          <User className="h-3.5 w-3.5" />
-                        </div>
-                        <span className="text-sm font-medium text-slate-600">
-                          {log.user_name}
-                        </span>
-                      </div>
+                      <span className="text-sm font-medium text-slate-600">
+                        {log.user_name}
+                      </span>
                     </td>
 
                     {/* Action Statement Details */}

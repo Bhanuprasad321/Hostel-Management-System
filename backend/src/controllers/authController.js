@@ -33,21 +33,18 @@ const login = async (req, res) => {
       });
     }
     if (user.role === "admin") {
-      const [row] = await db
-        .promise()
-        .query(
-          "SELECT end_date FROM subscriptions WHERE hostel_id = ? ORDER BY end_date DESC LIMIT 1",
-          [user.hostel_id],
-        );
-      if (row.length === 0)
-        return res
-          .status(403)
-          .json({ message: "No active subscription found" });
-      const end_date = row[0].end_date;
-      if (new Date() > new Date(end_date)) {
+      const [subscription] = await db.promise().query(
+        `SELECT *
+   FROM subscriptions
+   WHERE hostel_id = ?
+   AND (status = 'active' OR status = 'trial')
+   AND end_date >= NOW()`,
+        [user.hostel_id],
+      );
+
+      if (subscription.length === 0) {
         return res.status(403).json({
-          message:
-            "Subscription has expired! Complete the subscription payment to continue.",
+          message: "Subscription expired. Please contact administrator.",
         });
       }
     }
@@ -72,7 +69,6 @@ const login = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   login,
