@@ -115,6 +115,36 @@ const createHostelAdmin = async (req, res) => {
       return res
         .status(404)
         .json({ message: "No hostel exist with hostel id" });
+    const [subscription] = await db.promise().query(
+      `SELECT p.max_employees
+   FROM subscriptions s
+   JOIN subscription_plans p
+   ON s.plan_id = p.id
+   WHERE s.hostel_id = ?
+   AND (s.status = 'active' OR s.status = 'trial')
+   LIMIT 1`,
+      [hostel_id],
+    );
+
+    if (subscription.length === 0) {
+      return res.status(403).json({
+        message: "No active subscription found",
+      });
+    }
+
+    const [employeeCount] = await db.promise().query(
+      `SELECT COUNT(*) AS total
+   FROM users
+   WHERE hostel_id = ?
+   AND role != 'student'`,
+      [hostel_id],
+    );
+
+    if (employeeCount[0].total >= subscription[0].max_employees) {
+      return res.status(403).json({
+        message: "Employee limit reached. Please upgrade your subscription.",
+      });
+    }
     const [dupEmail] = await db
       .promise()
       .query("SELECT * FROM users WHERE email = ?", [email]);

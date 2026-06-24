@@ -26,6 +26,8 @@ import SuperAdminSubscriptions from "./pages/SuperAdminSubscriptionsPage";
 import AdminSubscriptionsPage from "./pages/AdminSubscriptionsPage";
 import BusinessInsightsPage from "./pages/BusinessInsightsPage";
 import SupportTicketsPage from "./pages/SupportTicketsPage";
+import HostelFeeManagementPage from "./pages/HostelFeeManagementPage";
+import StudentFeeManagement from "./pages/StudentFeeManagementPage";
 
 function App() {
   return (
@@ -55,6 +57,11 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/visitors" element={<VisitorsPage />} />
             <Route path="/support-tickets" element={<SupportTicketsPage />} />
+            <Route
+              path="/fee-management"
+              element={<HostelFeeManagementPage />}
+            />
+            <Route path="/my-fees" element={<StudentFeeManagement />} />
             <Route
               path="/super-admin/subscriptions"
               element={<SuperAdminSubscriptions />}

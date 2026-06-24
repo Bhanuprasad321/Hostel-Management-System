@@ -129,10 +129,10 @@ export default function AnalyticsAdminRoute() {
   }
 
   // ─── Computational Parameters ─────────────────────────────────
-  const totalCapacity =
-    (stats.occupancy_breakdown?.occupied || 0) +
-    (stats.occupancy_breakdown?.vacant || 0);
-  const occupiedBeds = stats.occupancy_breakdown?.occupied || 0;
+  // ✨ FIX: Wrap parameters inside Number() to prevent string concatenation bug ('7' + 21 = 721)
+  const occupiedBeds = Number(stats.occupancy_breakdown?.occupied || 0);
+  const vacantBeds = Number(stats.occupancy_breakdown?.vacant || 0);
+  const totalCapacity = occupiedBeds + vacantBeds;
 
   // Calculate Capacity Usage Percentage Formula
   const capacityUsagePercentage =
@@ -145,7 +145,7 @@ export default function AnalyticsAdminRoute() {
     labels: ["Occupied Beds", "Vacant Beds"],
     datasets: [
       {
-        data: [occupiedBeds, stats.occupancy_breakdown?.vacant || 0],
+        data: [occupiedBeds, vacantBeds],
         backgroundColor: [
           "rgba(249, 115, 22, 0.75)", // Orange Accent
           "rgba(20, 184, 166, 0.75)", // Teal Accent

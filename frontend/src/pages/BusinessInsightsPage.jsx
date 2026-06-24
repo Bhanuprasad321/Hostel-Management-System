@@ -231,39 +231,81 @@ export default function BusinessInsightsPage() {
         </div>
 
         {/* CSS/Tailwind Bar Chart Component */}
-        <div className="pt-4 pb-2">
-          <div className="flex items-end justify-between gap-2 h-36 border-b border-slate-100 px-2">
-            {chartData.map((bar, idx) => (
-              <div
-                key={idx}
-                className="flex-1 flex flex-col items-center group relative h-full justify-end"
-              >
-                {/* Micro Hover Value Indicator Badge */}
-                <div className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-slate-800 text-white font-mono text-[9px] px-2 py-0.5 rounded-sm shadow-sm pointer-events-none z-10 whitespace-nowrap">
-                  {formatCurrency(bar.amount)}
-                </div>
+        <div className="pt-2 pb-2 px-4">
+          {/* Bar Chart Area */}
+          <div className="relative h-44">
+            {/* Horizontal grid lines */}
+            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="w-full border-t border-slate-100" />
+              ))}
+            </div>
 
-                {/* Animated Column Bar */}
+            {/* Bars row */}
+            <div className="absolute inset-0 flex items-end gap-1.5">
+              {chartData.map((bar, idx) => (
                 <div
-                  style={{
-                    height: `${Math.max(bar.percentage, bar.amount > 0 ? 4 : 1)}%`,
-                  }}
-                  className={`w-full max-w-[32px] rounded-t-xs transition-all duration-500 ease-out ${
-                    bar.amount > 0
-                      ? "bg-gradient-to-t from-indigo-500 to-indigo-600 group-hover:from-indigo-600 group-hover:to-indigo-700 shadow-3xs"
-                      : "bg-slate-100"
-                  }`}
-                />
-              </div>
-            ))}
+                  key={idx}
+                  className="flex-1 flex flex-col items-center justify-end h-full group relative"
+                >
+                  {/* Tooltip — white card like screenshot */}
+                  <div className="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 scale-95 group-hover:scale-100 pointer-events-none z-30 whitespace-nowrap">
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-xl px-4 py-3 min-w-[160px]">
+                      {/* Month label */}
+                      <p className="text-xs font-semibold text-slate-700 mb-2">
+                        {bar.name}
+                      </p>
+                      {/* Revenue row */}
+                      <div className="flex items-center justify-between gap-6 mb-1.5">
+                        <span className="text-[11px] font-medium text-blue-500">
+                          Revenue
+                        </span>
+                        <span className="text-[11px] font-semibold text-blue-600 font-mono">
+                          {formatCurrency(bar.amount)}
+                        </span>
+                      </div>
+                      {/* Cost row */}
+                      <div className="flex items-center justify-between gap-6">
+                        <span className="text-[11px] font-medium text-orange-500">
+                          Cost
+                        </span>
+                        <span className="text-[11px] font-semibold text-orange-600 font-mono">
+                          {formatCurrency(bar.cost ?? 0)}
+                        </span>
+                      </div>
+                      {/* Arrow */}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-slate-200" />
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-[-1px] border-[5px] border-transparent border-t-white" />
+                    </div>
+                  </div>
+
+                  {/* Bar */}
+                  <div
+                    style={{
+                      height: `${Math.max(bar.percentage, bar.amount > 0 ? 6 : 1)}%`,
+                    }}
+                    className={`w-full rounded-t-md transition-all duration-500 ease-out ${
+                      bar.amount > 0
+                        ? "bg-indigo-500 group-hover:bg-indigo-400"
+                        : "bg-slate-100 group-hover:bg-slate-200"
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Timeframe Label Axis Layout */}
-          <div className="flex justify-between text-[10px] font-bold text-slate-400 pt-2 px-2">
+          {/* Axis border */}
+          <div className="border-t border-slate-200" />
+
+          {/* Month labels */}
+          <div className="flex gap-1.5 pt-2.5">
             {chartData.map((bar, idx) => (
-              <span key={idx} className="flex-1 text-center max-w-[32px]">
-                {bar.name}
-              </span>
+              <div key={idx} className="flex-1 text-center">
+                <span className="text-[10px] font-medium text-slate-400">
+                  {bar.name}
+                </span>
+              </div>
             ))}
           </div>
         </div>
@@ -302,7 +344,6 @@ export default function BusinessInsightsPage() {
                       <th className="pb-2.5 font-bold">Id</th>
                       <th className="pb-2.5 font-bold">Hostel</th>
                       <th className="pb-2.5 font-bold text-right">Amount</th>
-                      <th className="pb-2.5 font-bold text-center">Gateway</th>
                       <th className="pb-2.5 font-bold text-right">
                         Transaction Date
                       </th>
@@ -324,11 +365,7 @@ export default function BusinessInsightsPage() {
                         <td className="py-2.5 text-right font-bold font-mono text-indigo-600">
                           {formatCurrency(p.amount)}
                         </td>
-                        <td className="py-2.5 text-center text-[10px] font-black uppercase">
-                          <span className="px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded-sm tracking-wide">
-                            {p.payment_provider || "System"}
-                          </span>
-                        </td>
+
                         <td className="py-2.5 text-right text-[11px] text-slate-400 font-bold">
                           {formatDate(p.created_at)}
                         </td>

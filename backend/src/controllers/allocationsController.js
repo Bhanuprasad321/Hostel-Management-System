@@ -59,10 +59,77 @@ const createAllocation = async (req, res) => {
       "INSERT INTO allocations(hostel_id,student_id,room_id,status) VALUES (?,?,?,?)",
       [hostel_id, student_id, room_id, "active"],
     );
+
     await connection.query(
       "UPDATE rooms SET current_occupancy = ? WHERE hostel_id = ? AND id = ?",
       [room[0].current_occupancy + 1, hostel_id, room_id],
     );
+
+    // ADD HERE ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+    const [feeSettings] = await connection.query(
+      "SELECT * FROM fee_settings WHERE hostel_id = ?",
+      [hostel_id],
+    );
+
+    const [existingDeposit] = await connection.query(
+      `SELECT id
+   FROM student_fees
+   WHERE student_id = ?
+   AND fee_type = 'security_deposit'`,
+      [student_id],
+    );
+
+    if (feeSettings.length > 0 && existingDeposit.length === 0) {
+      await connection.query(
+        `INSERT INTO student_fees
+    (
+      hostel_id,
+      student_id,
+      fee_type,
+      amount,
+      due_date
+    )
+    VALUES (?,?,?,?,?)`,
+        [
+          hostel_id,
+          student_id,
+          "security_deposit",
+          feeSettings[0].security_deposit,
+          new Date(),
+        ],
+      );
+    }
+    const [existingMonthlyFee] = await connection.query(
+      `SELECT id
+   FROM student_fees
+   WHERE student_id = ?
+   AND fee_type = 'monthly_fee'`,
+      [student_id],
+    );
+
+    if (feeSettings.length > 0 && existingMonthlyFee.length === 0) {
+      await connection.query(
+        `INSERT INTO student_fees
+    (
+      hostel_id,
+      student_id,
+      fee_type,
+      amount,
+      due_date
+    )
+    VALUES (?,?,?,?,?)`,
+        [
+          hostel_id,
+          student_id,
+          "monthly_fee",
+          feeSettings[0].monthly_fee,
+          new Date(),
+        ],
+      );
+    }
+    // ADD ENDS HERE ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
     await connection.commit();
     await createAuditLog(
       hostel_id,
@@ -158,7 +225,12 @@ const vacateStudent = async (req, res) => {
       "UPDATE allocations SET status = ? , vacated_at = NOW() WHERE id = ? AND student_id = ?",
       ["vacated", allocation_id, student_id],
     );
-    const [student] = await db.promise().query('SELECT * FROM users WHERE id = ? AND hostel_id = ?',[student_id,hostel_id]);
+    const [student] = await db
+      .promise()
+      .query("SELECT * FROM users WHERE id = ? AND hostel_id = ?", [
+        student_id,
+        hostel_id,
+      ]);
     const name = student[0].name;
     const [room] = await connection.query(
       "SELECT * FROM rooms WHERE id = ? AND hostel_id=?",

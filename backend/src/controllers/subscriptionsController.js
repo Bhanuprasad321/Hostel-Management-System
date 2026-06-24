@@ -106,7 +106,30 @@ const purchasePlan = async (req, res) => {
     }
 
     const selectedPlan = plan[0];
+    const [currentPlan] = await connection.query(
+      `SELECT
+      p.id,
+      p.name,
+      p.price
+   FROM subscriptions s
+   JOIN subscription_plans p
+   ON s.plan_id = p.id
+   WHERE s.hostel_id = ?
+   AND (s.status = 'active' OR s.status = 'trial')
+   LIMIT 1`,
+      [hostel_id],
+    );
 
+    if (currentPlan.length > 0) {
+      const existingPlan = currentPlan[0];
+
+      if (Number(selectedPlan.price) < Number(existingPlan.price)) {
+        return res.status(400).json({
+          message:
+            "Downgrading to a lower plan is not allowed. Please contact support.",
+        });
+      }
+    }
     if (selectedPlan.name.toLowerCase() === "trial") {
       return res.status(400).json({
         message: "Trial plan can only be assigned during hostel registration",

@@ -337,11 +337,6 @@ export default function Students() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
-                        <div
-                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${avatarColor(student.id)} text-xs font-bold text-white shadow-sm`}
-                        >
-                          {getInitials(student.name)}
-                        </div>
                         <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">
                           {student.name}
                         </span>

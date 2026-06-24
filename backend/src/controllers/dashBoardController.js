@@ -85,7 +85,7 @@ const getAdminDashbordStats = async (req, res) => {
       active: active_allocations,
       vacated: vacated_allocations,
     };
-
+    
     return res.status(200).json({
       total_rooms,
       total_students,

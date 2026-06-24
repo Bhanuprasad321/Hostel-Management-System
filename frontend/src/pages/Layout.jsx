@@ -19,6 +19,8 @@ import {
   Wrench,
   ChartColumn,
   AlertCircle,
+  Receipt,
+  IndianRupee,
   Home,
 } from "lucide-react";
 import api from "../services/api"; // Handled through your existing axios helper instance
@@ -45,6 +47,7 @@ const adminLinks = [
   { to: "/students", label: "Students", icon: Users },
   { to: "/rooms", label: "Rooms", icon: BedDouble },
   { to: "/allocations", label: "Allocations", icon: ClipboardList },
+  { to: "/fee-management", label: "Fee Management", icon: Receipt },
   { to: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
   { to: "/complaints", label: "Complaints", icon: MessageSquareWarning },
   { to: "/visitors", label: "Visitors Log", icon: Users },
@@ -63,6 +66,7 @@ const studentLinks = [
     label: "Allocation Details",
     icon: ClipboardList,
   },
+  { to: "/my-fees", label: "Fee Management", icon: IndianRupee },
   { to: "/notices", label: "Notices", icon: AlertCircle },
   { to: "/complaints", label: "Complaints", icon: MessageSquareWarning },
   { to: "/notifications", label: "Notifications", icon: Bell },

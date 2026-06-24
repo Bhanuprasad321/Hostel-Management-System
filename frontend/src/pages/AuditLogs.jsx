@@ -182,7 +182,7 @@ export default function AuditLogs() {
               <tr className="bg-slate-50/80 border-b border-slate-100">
                 {/* Index Header — displays 1..n, not the DB id */}
                 <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider select-none w-20">
-                  <div className="flex items-center">#</div>
+                  <div className="flex items-center">Id</div>
                 </th>
 
                 {/* Hostel Name Header */}

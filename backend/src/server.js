@@ -20,6 +20,8 @@ const plansRoutes = require("./routes/plansRoutes");
 const reportsRoutes = require("./routes/reportsRoutes");
 const businessInsights = require("./routes/businessInsightRoute");
 const supportTickets = require("./routes/supportTicketsRoute");
+const fees = require("./routes/feesRoutes");
+
 const cors = require("cors");
 
 const app = express();
@@ -49,6 +51,7 @@ app.use("/api/plans", plansRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/businessInsights", businessInsights);
 app.use("/api/supportTickets", supportTickets);
+app.use("/api/fees", fees);
 
 app.listen(2000, () => {
   console.log(`App is running at port ${2000}`);

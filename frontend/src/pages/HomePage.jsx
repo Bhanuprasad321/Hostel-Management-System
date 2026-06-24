@@ -241,7 +241,7 @@ export default function HomePage() {
               className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-7 py-3.5 rounded-xl text-[15px] font-medium transition-colors shadow-lg shadow-indigo-500/25"
             >
               <i className="ti ti-login text-lg" />
-              Try demo login
+              Schedule a Free Demo
             </button>
             <a
               href="#how-it-works"
@@ -423,32 +423,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* ── Demo CTA Banner ── */}
-      <div className="mx-8 md:mx-14 mb-20 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-px">
-        <div className="rounded-[15px] bg-gradient-to-r from-indigo-600/90 to-violet-600/90 px-10 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h3 className="text-[22px] font-bold text-white mb-1">
-              See it live in 30 seconds
-            </h3>
-            <p className="text-white/70 text-[14px]">
-              Use our demo credentials to explore the super admin and hostel
-              admin views.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            <div className="bg-white/15 border border-white/20 rounded-xl px-5 py-3 text-[13px] text-white/80 font-mono">
-              demo@hostelms.app
-            </div>
-            <button
-              onClick={() => navigate("/login")}
-              className="bg-white text-indigo-700 font-semibold text-[14px] px-6 py-3 rounded-xl hover:bg-white/90 transition-colors"
-            >
-              Launch demo →
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* ── Testimonials ── */}
       <section

@@ -14,7 +14,7 @@ import {
   History,
   ShieldAlert,
   Eye,
-  Download, // Added Download icon
+  Download,
 } from "lucide-react";
 import api from "../services/api";
 
@@ -49,7 +49,6 @@ export default function AllocationsRoute() {
       setLoading(true);
       setError("");
       const res = await api.get("/allocations");
-      // Handle array payload safely if wrapped inside data objects
       setAllocations(
         Array.isArray(res.data) ? res.data : res.data?.allocations || [],
       );
@@ -115,7 +114,7 @@ export default function AllocationsRoute() {
 
   // Vacate Processing Handler
   const handleVacateStudent = async (e, id) => {
-    e.stopPropagation(); // Stop row click trigger
+    e.stopPropagation();
     if (!window.confirm("Are you sure you want to vacate the student?")) return;
 
     try {
@@ -156,12 +155,10 @@ export default function AllocationsRoute() {
       setExportLoading(true);
       setError("");
 
-      // Request file stream parsing via blob assignment type
       const response = await api.get("/reports/allocations", {
         responseType: "blob",
       });
 
-      // Setup dynamic structural link download configuration
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -169,11 +166,9 @@ export default function AllocationsRoute() {
       document.body.appendChild(link);
       link.click();
 
-      // Clean target runtime reference frames
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      // Handle server error payloads when responseType is 'blob'
       if (err.response?.data instanceof Blob) {
         try {
           const text = await err.response.data.text();
@@ -354,7 +349,8 @@ export default function AllocationsRoute() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 font-medium">
-                {filteredAllocations.map((item) => {
+                {/* ── index added here; item.id kept for all backend calls ── */}
+                {filteredAllocations.map((item, index) => {
                   const isVacated = item.status === "vacated";
 
                   return (
@@ -363,10 +359,10 @@ export default function AllocationsRoute() {
                       onClick={() => openAllocationDetails(item.id)}
                       className="hover:bg-slate-50/60 transition-colors cursor-pointer group"
                     >
-                      {/* Reference Assignment ID */}
+                      {/* Display sequential number; real id used only for backend */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">
-                          #{item.id || "N/A"}
+                          {index + 1}
                         </span>
                       </td>
 
@@ -402,7 +398,7 @@ export default function AllocationsRoute() {
                         </span>
                       </td>
 
-                      {/* Inline Actions Drawer trigger map overrides */}
+                      {/* Inline Actions */}
                       <td
                         className="px-6 py-4 whitespace-nowrap text-right"
                         onClick={(e) => e.stopPropagation()}
