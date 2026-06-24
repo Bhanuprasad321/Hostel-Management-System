@@ -28,6 +28,7 @@ import BusinessInsightsPage from "./pages/BusinessInsightsPage";
 import SupportTicketsPage from "./pages/SupportTicketsPage";
 import HostelFeeManagementPage from "./pages/HostelFeeManagementPage";
 import StudentFeeManagement from "./pages/StudentFeeManagementPage";
+import DemoRequestsPage from "./pages/DemoRequestsPage";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/visitors" element={<VisitorsPage />} />
             <Route path="/support-tickets" element={<SupportTicketsPage />} />
+            <Route path="/demo-requests" element={<DemoRequestsPage />} />
             <Route
               path="/fee-management"
               element={<HostelFeeManagementPage />}

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import api from "../services/api"; // Added API service import
 
 // ── Data ──────────────────────────────────────────────────────
 
@@ -178,15 +179,72 @@ function FaqItem({ q, a }) {
 export default function HomePage() {
   const navigate = useNavigate();
 
+  // ── Modal & Form States ──
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    hostel_name: "",
+    city: "",
+    message: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    try {
+      // Maps to POST /api/demos inside backend architecture
+      const res = await api.post("/demos", formData);
+      setSuccessMsg(res.data?.message || "Demo request created successfully!");
+      // Reset form variables
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        hostel_name: "",
+        city: "",
+        message: "",
+      });
+      // Close modal gracefully after timeout delay
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setSuccessMsg("");
+      }, 3000);
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(
+        err.response?.data?.message ||
+          "Failed to send demo request vectors. Please check connections.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#0d1036] text-white font-sans">
+    <div className="min-h-screen bg-[#0d1036] text-white font-sans relative">
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 flex items-center justify-between px-8 md:px-14 h-16 border-b border-white/[0.08] bg-[#0d1036]/90 backdrop-blur-md">
         <div className="flex items-center gap-3 text-[17px] font-semibold">
           <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
             <i className="ti ti-building text-white text-base" />
           </div>
-          HostelMS
+          <div>
+            StaySync
+            <p className="text-[11px] ">Hostel Administration System</p>
+          </div>
         </div>
         <div className="hidden md:flex items-center gap-8">
           {["Features", "How it works", "Testimonials", "FAQ"].map((l) => (
@@ -207,7 +265,7 @@ export default function HomePage() {
             Sign in
           </button>
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => setIsModalOpen(true)}
             className="bg-indigo-500 hover:bg-indigo-400 text-white text-[13px] font-medium px-4 py-2 rounded-lg transition-colors"
           >
             Get started →
@@ -231,16 +289,17 @@ export default function HomePage() {
             </span>
           </h1>
           <p className="text-[16px] text-white/55 leading-relaxed max-w-[460px] mb-10">
-            HostelMS gives institutions a single command center to manage rooms,
+            StaySync gives institutions a single command center to manage rooms,
             students, allocations and staff — with airtight multi-tenant
             isolation and real-time dashboards.
           </p>
           <div className="flex flex-wrap items-center gap-3">
+            {/* ✨ FIX: Opens interactive submission form modal now instead of simple router navigations */}
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => setIsModalOpen(true)}
               className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-7 py-3.5 rounded-xl text-[15px] font-medium transition-colors shadow-lg shadow-indigo-500/25"
             >
-              <i className="ti ti-login text-lg" />
+              <i className="ti ti-calendar-event text-lg" />
               Schedule a Free Demo
             </button>
             <a
@@ -273,7 +332,7 @@ export default function HomePage() {
               <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
               <span className="ml-3 text-[11px] text-white/35 font-mono">
-                hostelms.app/dashboard
+                StaySync.app/dashboard
               </span>
             </div>
             {/* Content */}
@@ -498,14 +557,181 @@ export default function HomePage() {
         <p className="text-[15px] text-white/50 mb-10 max-w-[400px] mx-auto leading-relaxed">
           Sign in and start managing rooms, students, and allocations today.
         </p>
+        {/* ✨ FIX: Updated this CTA button to open the demo request modal fields too */}
         <button
-          onClick={() => navigate("/login")}
+          onClick={() => setIsModalOpen(true)}
           className="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold px-9 py-4 rounded-xl text-[15px] transition-colors shadow-xl shadow-indigo-500/30"
         >
-          <i className="ti ti-login text-lg" />
-          Get started free
+          <i className="ti ti-calendar-event text-lg" />
+          Schedule a Free Demo
         </button>
       </div>
+
+      {/* ── Interactive Form Modal for Demo Request ── */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[#0f1340] border border-white/10 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl shadow-black/80 flex flex-col max-h-[90vh]">
+            {/* Modal Titlebar */}
+            <div className="bg-[#141852] px-6 py-4 flex items-center justify-between border-b border-white/[0.07]">
+              <div>
+                <h3 className="text-base font-bold text-white">
+                  Request a Live Demo
+                </h3>
+                <p className="text-[11px] text-white/40 mt-0.5">
+                  Explore StaySync tailored to your campus architecture
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setErrorMsg("");
+                  setSuccessMsg("");
+                }}
+                className="w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center text-sm transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Form Context Scrollable Box */}
+            <form
+              onSubmit={handleFormSubmit}
+              className="p-6 space-y-4 overflow-y-auto"
+            >
+              {errorMsg && (
+                <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-3 text-xs text-rose-400 font-medium">
+                  ⚠️ {errorMsg}
+                </div>
+              )}
+              {successMsg && (
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-xs text-emerald-400 font-medium">
+                  ✓ {successMsg}
+                </div>
+              )}
+
+              {/* Row 1: Name & Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block font-semibold">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Ramesh Kumar"
+                    className="w-full bg-[#1a1f5e] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-white placeholder-white/20 focus:outline-hidden focus:border-indigo-500/60 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block font-semibold">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="name@institution.com"
+                    className="w-full bg-[#1a1f5e] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-white placeholder-white/20 focus:outline-hidden focus:border-indigo-500/60 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Phone & Hostel Name */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block font-semibold">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="+91 XXXXX XXXXX"
+                    className="w-full bg-[#1a1f5e] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-white placeholder-white/20 focus:outline-hidden focus:border-indigo-500/60 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block font-semibold">
+                    Hostel / Institution *
+                  </label>
+                  <input
+                    type="text"
+                    name="hostel_name"
+                    required
+                    value={formData.hostel_name}
+                    onChange={handleInputChange}
+                    placeholder="Green Valley Residency"
+                    className="w-full bg-[#1a1f5e] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-white placeholder-white/20 focus:outline-hidden focus:border-indigo-500/60 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Row 3: City */}
+              <div>
+                <label className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block font-semibold">
+                  City *
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  required
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="Mumbai"
+                  className="w-full bg-[#1a1f5e] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-white placeholder-white/20 focus:outline-hidden focus:border-indigo-500/60 transition-colors"
+                />
+              </div>
+
+              {/* Row 4: Optional Message */}
+              <div>
+                <label className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block font-semibold">
+                  Additional Message (Optional)
+                </label>
+                <textarea
+                  name="message"
+                  rows="3"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="Tell us about your structural room counts or specific dashboard sync needs..."
+                  className="w-full bg-[#1a1f5e] border border-white/10 rounded-xl px-4 py-2.5 text-[13px] text-white placeholder-white/20 focus:outline-hidden focus:border-indigo-500/60 transition-colors resize-none"
+                />
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/[0.05]">
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setErrorMsg("");
+                    setSuccessMsg("");
+                  }}
+                  className="px-4 py-2 text-[13px] text-white/50 hover:text-white disabled:opacity-40 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="bg-indigo-500 hover:bg-indigo-400 font-medium px-5 py-2.5 rounded-xl text-[13px] text-white flex items-center gap-2 transition-colors disabled:opacity-40 shadow-md shadow-indigo-500/10"
+                >
+                  {submitting
+                    ? "Processing Request..."
+                    : "Submit Demo Request →"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* ── Footer ── */}
       <footer className="bg-[#080c2a] border-t border-white/[0.06] px-8 md:px-14 pt-14 pb-8">
@@ -518,7 +744,7 @@ export default function HomePage() {
                   <i className="ti ti-building text-white text-base" />
                 </div>
                 <span className="text-[16px] font-semibold text-white">
-                  HostelMS
+                  StaySync
                 </span>
               </div>
               <p className="text-[13px] text-white/40 leading-relaxed">
@@ -576,7 +802,7 @@ export default function HomePage() {
           {/* Bottom bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/[0.07] pt-8">
             <p className="text-[12px] text-white/25">
-              © 2026 HostelMS · Built with Node.js, React & MySQL
+              © 2026 StaySync · Built with Node.js, React & MySQL
             </p>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />

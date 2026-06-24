@@ -22,6 +22,7 @@ import {
   Receipt,
   IndianRupee,
   Home,
+  Inbox,
 } from "lucide-react";
 import api from "../services/api"; // Handled through your existing axios helper instance
 
@@ -37,6 +38,7 @@ const superAdminLinks = [
   { to: "/business-insights", label: "Business Insights", icon: TrendingUp },
   { to: "/audit-logs", label: "Audit Logs", icon: History },
   { to: "/support-tickets", label: "Support Tickets", icon: Ticket },
+  { to: "/demo-requests", label: "Demo Requests", icon: Inbox },
   { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/settings", label: "Settings", icon: Wrench },
   { to: "/super-admin/analytics", label: "Analytics", icon: ChartColumn },
@@ -157,7 +159,8 @@ export default function DashboardLayout() {
           <Building2 className="h-5 w-5 text-white" />
         </div>
         <span className="text-[17px] font-semibold text-slate-800">
-          HostelMS
+          StaySync
+          <p className="text-[10px]">Hostel Administration System</p>
         </span>
       </div>
 
@@ -270,7 +273,7 @@ export default function DashboardLayout() {
 
             {/* Balanced Breadcrumb Trail */}
             <div className="flex items-center gap-2 text-s font-medium text-slate-400 select-none">
-              <span className="tracking-wide">HostelMS</span>
+              <span className="tracking-wide">StaySync</span>
               <span className="text-slate-300">/</span>
               <span className="text-slate-600 font-semibold">
                 {getHeaderTitle()}

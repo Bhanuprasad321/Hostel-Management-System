@@ -1,4 +1,9 @@
-require("dotenv").config();
+const path = require("path");
+
+require("dotenv").config({
+  path: path.join(__dirname, "../.env"),
+});
+
 const { connectSql } = require("./config/mysql");
 
 connectSql();
@@ -21,6 +26,7 @@ const reportsRoutes = require("./routes/reportsRoutes");
 const businessInsights = require("./routes/businessInsightRoute");
 const supportTickets = require("./routes/supportTicketsRoute");
 const fees = require("./routes/feesRoutes");
+const demoRequests = require("./routes/homeRoutes");
 
 const cors = require("cors");
 
@@ -29,7 +35,6 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
-  console.log("This is Home page of the website");
   res.json("Hello");
 });
 
@@ -52,7 +57,9 @@ app.use("/api/reports", reportsRoutes);
 app.use("/api/businessInsights", businessInsights);
 app.use("/api/supportTickets", supportTickets);
 app.use("/api/fees", fees);
+app.use("/api/demos", demoRequests);
 
-app.listen(2000, () => {
-  console.log(`App is running at port ${2000}`);
+const PORT = process.env.PORT || 2000;
+app.listen(PORT, () => {
+  console.log(`App is running at port ${PORT}`);
 });

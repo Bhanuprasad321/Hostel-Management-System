@@ -1,5 +1,5 @@
 require("dotenv").config();
-const mysql = require('mysql2');
+const mysql = require("mysql2");
 
 const db = mysql.createPool({
   host: "localhost",
@@ -19,4 +19,4 @@ const connectSql = async () => {
   }
 };
 
-module.exports = {connectSql,db} ;
+module.exports = { connectSql, db };
