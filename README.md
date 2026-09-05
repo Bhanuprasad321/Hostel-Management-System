@@ -1,4 +1,4 @@
-````markdown
+
 # StaySync 🏠
 
 ## Multi-Tenant Hostel Management SaaS
