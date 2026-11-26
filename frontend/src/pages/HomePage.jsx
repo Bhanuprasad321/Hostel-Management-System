@@ -85,8 +85,8 @@ const steps = [
 ];
 
 const stats = [
-  { value: "500+", label: "Hostels managed" },
-  { value: "12k+", label: "Students tracked" },
+  { value: "100+", label: "Hostels managed" },
+  { value: "8k+", label: "Students tracked" },
   { value: "99.9%", label: "Uptime" },
   { value: "3", label: "Role levels" },
 ];

@@ -170,6 +170,16 @@ const getSuperAdminDashboardStats = async (req, res) => {
       occupied,
       vacant: total_capacity - occupied,
     };
+    //plan breakdown (distribution of hostels across active/trial plans)
+    const [plan_breakdown] = await db.promise().query(
+      `SELECT p.name AS plan_name, COUNT(DISTINCT s.hostel_id) AS count
+       FROM subscription_plans p
+       LEFT JOIN subscriptions s
+         ON p.id = s.plan_id AND s.status IN ('active', 'trial')
+       GROUP BY p.id, p.name, p.price
+       ORDER BY p.price ASC`,
+    );
+
     //top hostels
     const [top_hostels] = await db
       .promise()
@@ -186,6 +196,7 @@ const getSuperAdminDashboardStats = async (req, res) => {
       active_allocations,
       vacated_allocations,
       subscription_breakdown,
+      plan_breakdown,
       capacity_breakdown,
       top_hostels,
     });

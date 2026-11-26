@@ -41,46 +41,78 @@ function App() {
         {/* Protected routes — wrapped in DashboardLayout */}
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
-            <Route path="/super-admin" element={<SuperAdminDashboard />} />
-            <Route path="/hostels" element={<HostelsRoute />} />
-            <Route path="/admins" element={<AdminRoute />} />
-            <Route path="/hostel-admin" element={<AdminDashboard />} />
-            <Route path="/student" element={<StudentDashboard />} />
-            <Route path="/allocation-details" element={<AllocationDetails />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="/rooms" element={<RoomRoute />} />
-            <Route path="/allocations" element={<AllocationsRoute />} />
-            <Route path="/audit-logs" element={<AuditLogs />} />
+            {/* Super Admin only */}
+            <Route
+              element={<ProtectedRoute allowedRoles={["super_admin"]} />}
+            >
+              <Route path="/super-admin" element={<SuperAdminDashboard />} />
+              <Route path="/hostels" element={<HostelsRoute />} />
+              <Route path="/admins" element={<AdminRoute />} />
+              <Route
+                path="/super-admin/subscriptions"
+                element={<SuperAdminSubscriptions />}
+              />
+              <Route
+                path="/super-admin/analytics"
+                element={<AnalyticsSuperAdminRoute />}
+              />
+              <Route
+                path="/business-insights"
+                element={<BusinessInsightsPage />}
+              />
+              <Route path="/demo-requests" element={<DemoRequestsPage />} />
+            </Route>
+
+            {/* Hostel Admin only */}
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route path="/hostel-admin" element={<AdminDashboard />} />
+              <Route path="/students" element={<Students />} />
+              <Route path="/rooms" element={<RoomRoute />} />
+              <Route path="/allocations" element={<AllocationsRoute />} />
+              <Route
+                path="/fee-management"
+                element={<HostelFeeManagementPage />}
+              />
+              <Route
+                path="/admin/subscriptions"
+                element={<AdminSubscriptionsPage />}
+              />
+              <Route path="/admin/analytics" element={<AnalyticsAdminRoute />} />
+              <Route path="/visitors" element={<VisitorsPage />} />
+            </Route>
+
+            {/* Student only */}
+            <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
+              <Route path="/student" element={<StudentDashboard />} />
+              <Route
+                path="/allocation-details"
+                element={<AllocationDetails />}
+              />
+              <Route path="/my-fees" element={<StudentFeeManagement />} />
+            </Route>
+
+            {/* Super Admin & Hostel Admin */}
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={["super_admin", "admin"]} />
+              }
+            >
+              <Route path="/audit-logs" element={<AuditLogs />} />
+              <Route path="/support-tickets" element={<SupportTicketsPage />} />
+            </Route>
+
+            {/* Hostel Admin & Student */}
+            <Route
+              element={<ProtectedRoute allowedRoles={["admin", "student"]} />}
+            >
+              <Route path="/notices" element={<NoticesPage />} />
+              <Route path="/complaints" element={<ComplaintsPage />} />
+            </Route>
+
+            {/* All authenticated roles */}
             <Route path="/notifications" element={<NotificationsRoute />} />
             <Route path="/settings" element={<SettingsRoute />} />
-            <Route path="/notices" element={<NoticesPage />} />
-            <Route path="/complaints" element={<ComplaintsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/visitors" element={<VisitorsPage />} />
-            <Route path="/support-tickets" element={<SupportTicketsPage />} />
-            <Route path="/demo-requests" element={<DemoRequestsPage />} />
-            <Route
-              path="/fee-management"
-              element={<HostelFeeManagementPage />}
-            />
-            <Route path="/my-fees" element={<StudentFeeManagement />} />
-            <Route
-              path="/super-admin/subscriptions"
-              element={<SuperAdminSubscriptions />}
-            />
-            <Route
-              path="/admin/subscriptions"
-              element={<AdminSubscriptionsPage />}
-            />
-            <Route
-              path="/super-admin/analytics"
-              element={<AnalyticsSuperAdminRoute />}
-            />
-            <Route path="/admin/analytics" element={<AnalyticsAdminRoute />} />
-            <Route
-              path="/business-insights"
-              element={<BusinessInsightsPage />}
-            />
           </Route>
         </Route>
       </Routes>

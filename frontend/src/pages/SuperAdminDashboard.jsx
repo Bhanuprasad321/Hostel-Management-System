@@ -67,7 +67,7 @@ export default function DashboardCards() {
         const endpoint =
           role === "super_admin"
             ? "/dashboard/super-admin"
-            : "/dashboard/admin";
+            : "/dashboard/hostel-admin";
         const res = await api.get(endpoint);
         setStats(res.data);
       } catch (err) {

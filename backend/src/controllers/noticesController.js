@@ -52,7 +52,15 @@ const deleteNotice = async (req, res) => {
     const hostel_id = req.user.hostel_id;
     const [rows] = await db
       .promise()
-      .query("SELECT title FROM notices WHERE hostel_id=?", [hostel_id]);
+      .query("SELECT title FROM notices WHERE id = ? AND hostel_id = ?", [
+        id,
+        hostel_id,
+      ]);
+    if (rows.length === 0) {
+      return res.status(404).json({
+        message: "Notice not found",
+      });
+    }
     const title = rows[0].title;
     const [result] = await db
       .promise()

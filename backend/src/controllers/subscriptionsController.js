@@ -135,7 +135,6 @@ const purchasePlan = async (req, res) => {
         message: "Trial plan can only be assigned during hostel registration",
       });
     }
-    await connection.beginTransaction();
 
     const [currentSubscription] = await connection.query(
       `SELECT *
@@ -146,12 +145,15 @@ const purchasePlan = async (req, res) => {
     );
     if (
       currentSubscription.length > 0 &&
-      currentSubscription[0].plan_id === plan_id
+      Number(currentSubscription[0].plan_id) === Number(plan_id)
     ) {
       return res.status(400).json({
         message: "You are already subscribed to this plan",
       });
     }
+
+    await connection.beginTransaction();
+
     if (currentSubscription.length > 0) {
       await connection.query(
         `UPDATE subscriptions
@@ -261,6 +263,7 @@ const currentPlan = async (req, res) => {
        ON s.plan_id = p.id
        WHERE s.hostel_id = ?
        AND (s.status = 'active' OR s.status = 'trial')
+       AND s.end_date >= NOW()
        ORDER BY s.created_at DESC
        LIMIT 1`,
       [hostel_id],

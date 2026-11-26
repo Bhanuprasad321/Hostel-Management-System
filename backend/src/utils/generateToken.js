@@ -1,9 +1,8 @@
 const jwt = require("jsonwebtoken");
-
-const secretKey = "your-very-secure-secret";
+const { JWT_SECRET } = require("../config/jwt");
 
 const generateToken = (userId, role, hostel_id) => {
-  return jwt.sign({ id: userId, role, hostel_id }, secretKey, {
+  return jwt.sign({ id: userId, role, hostel_id }, JWT_SECRET, {
     expiresIn: "1h",
   });
 };

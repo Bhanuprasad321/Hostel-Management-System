@@ -123,7 +123,7 @@ const exportVisitors = async (req, res) => {
     const fields = [
       "visitor_id",
       "visitor_name",
-      "mobile",
+      "visitor_phone",
       "purpose",
       "host_student",
       "check_in",

@@ -39,7 +39,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api", authRoutes); //testing
 app.use("/api/hostels", hostelRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/rooms", roomRoutes);
@@ -59,7 +58,7 @@ app.use("/api/supportTickets", supportTickets);
 app.use("/api/fees", fees);
 app.use("/api/demos", demoRequests);
 
-const PORT = process.env.PORT || 2000;
+const PORT = process.env.PORT ;
 app.listen(PORT, () => {
   console.log(`App is running at port ${PORT}`);
 });

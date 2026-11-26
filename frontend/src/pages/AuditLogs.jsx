@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Search,
   ArrowUpDown,
@@ -12,7 +12,6 @@ import api from "../services/api"; // Adjust file hierarchy matching your app la
 
 export default function AuditLogs() {
   const [logs, setLogs] = useState([]);
-  const [filteredLogs, setFilteredLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Search & Filter Matrix States
@@ -30,8 +29,8 @@ export default function AuditLogs() {
     const fetchLogs = async () => {
       try {
         setLoading(true);
-        // Directing GET call directly to your target core API layout
-        const res = await api.get("http://localhost:2000/api/audit-logs");
+        // Directing GET call through shared Axios baseURL configuration
+        const res = await api.get("/audit-logs");
         setLogs(res.data);
       } catch (err) {
         console.error("Audit log processing pipeline breakdown:", err);
@@ -43,7 +42,7 @@ export default function AuditLogs() {
   }, []);
 
   // ─── Filter & Search Engine Runtime ─────────────────────────
-  useEffect(() => {
+  const filteredLogs = useMemo(() => {
     let output = [...logs];
 
     if (searchTerm.trim() !== "") {
@@ -52,7 +51,7 @@ export default function AuditLogs() {
         (log) =>
           log.hostel_name?.toLowerCase().includes(target) ||
           log.user_name?.toLowerCase().includes(target) ||
-          log.action_time?.toLowerCase().includes(target),
+          log.action?.toLowerCase().includes(target),
       );
     }
 
@@ -83,8 +82,7 @@ export default function AuditLogs() {
       });
     }
 
-    setFilteredLogs(output);
-    setCurrentPage(1); // Reset index frame back to 1 on mutation parameters
+    return output;
   }, [searchTerm, sortConfig, logs]);
 
   // Pagination Calculus
@@ -99,6 +97,7 @@ export default function AuditLogs() {
       direction = "desc";
     }
     setSortConfig({ key, direction });
+    setCurrentPage(1);
   };
 
   // Helper dynamic asset to view header configuration arrows
@@ -168,7 +167,10 @@ export default function AuditLogs() {
             type="text"
             placeholder="Filter by hostel name, user name, or action statement..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 pl-10 pr-4 text-sm text-slate-700 outline-hidden placeholder:text-slate-400 transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
           />
         </div>
@@ -207,11 +209,11 @@ export default function AuditLogs() {
 
                 {/* Log Entry Statement Header */}
                 <th
-                  onClick={() => requestSort("action_time")}
+                  onClick={() => requestSort("action")}
                   className="group px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer select-none transition-colors hover:bg-slate-100/60"
                 >
                   <div className="flex items-center gap-1.5">
-                    Action {getSortIcon("action_time")}
+                    Action {getSortIcon("action")}
                   </div>
                 </th>
 

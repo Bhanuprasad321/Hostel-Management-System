@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const secretKey = "your-very-secure-secret";
+const { JWT_SECRET } = require("../config/jwt");
 const { db } = require("../config/mysql");
 const protect = async (req, res, next) => {
   let token;
@@ -9,13 +9,18 @@ const protect = async (req, res, next) => {
   ) {
     try {
       token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, secretKey);
+      const decoded = jwt.verify(token, JWT_SECRET);
       const [rows] = await db
         .promise()
         .query(
           "SELECT id, name, email, role, hostel_id FROM users WHERE id = ?",
           [decoded.id],
         );
+      if (rows.length === 0) {
+        return res
+          .status(401)
+          .json({ message: "Not authorized, user not found" });
+      }
       req.user = rows[0];
       next();
     } catch (err) {
@@ -63,6 +68,8 @@ const checkFeature = (featureName) => {
         ON s.plan_id = p.id
         WHERE s.hostel_id = ?
         AND (s.status = 'active' OR s.status = 'trial')
+        AND s.end_date >= NOW()
+        ORDER BY s.created_at DESC
         LIMIT 1
         `,
         [hostel_id],

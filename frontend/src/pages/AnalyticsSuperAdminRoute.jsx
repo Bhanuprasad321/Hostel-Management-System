@@ -85,19 +85,28 @@ export default function AnalyticsSuperAdminRoute() {
 
   // ─── Chart Data Configuration Matrices ────────────────────────
 
-  // Chart 1: Subscription Tier Profile Matrix (Mock Data Map fallback or computed from sub tiers)
-  // Because backend groups by status, plans map standard layout tiers (Trial: 8, Basic: 15, Pro: 5)
+  // Chart 1: Subscription Tier Profile Matrix (Live from backend plan_breakdown query)
+  const planBreakdownList = stats.plan_breakdown || [];
+  const hasPlanData = planBreakdownList.some((item) => Number(item.count) > 0);
+  const planPalette = [
+    { bg: "rgba(245, 158, 11, 0.75)", border: "#f59e0b" }, // Amber
+    { bg: "rgba(6, 182, 212, 0.75)", border: "#06b6d4" }, // Cyan
+    { bg: "rgba(139, 92, 246, 0.75)", border: "#8b5cf6" }, // Violet
+    { bg: "rgba(16, 185, 129, 0.75)", border: "#10b981" }, // Emerald
+    { bg: "rgba(59, 130, 246, 0.75)", border: "#3b82f6" }, // Blue
+    { bg: "rgba(244, 63, 94, 0.75)", border: "#f43f5e" }, // Rose
+  ];
   const planDistributionData = {
-    labels: ["Trial Plan", "Basic Plan", "Pro Plan"],
+    labels: planBreakdownList.map((p) => p.plan_name),
     datasets: [
       {
-        data: [8, 15, 5], // Configured tracking plan parameters
-        backgroundColor: [
-          "rgba(245, 158, 11, 0.75)", // Amber
-          "rgba(6, 182, 212, 0.75)", // Cyan
-          "rgba(139, 92, 246, 0.75)", // Violet
-        ],
-        borderColor: ["#f59e0b", "#06b6d4", "#8b5cf6"],
+        data: planBreakdownList.map((p) => Number(p.count) || 0),
+        backgroundColor: planBreakdownList.map(
+          (_, idx) => planPalette[idx % planPalette.length].bg,
+        ),
+        borderColor: planBreakdownList.map(
+          (_, idx) => planPalette[idx % planPalette.length].border,
+        ),
         borderWidth: 1.5,
       },
     ],
@@ -273,7 +282,13 @@ export default function AnalyticsSuperAdminRoute() {
             </div>
           </div>
           <div className="h-64 relative w-full flex items-center justify-center">
-            <Pie data={planDistributionData} options={globalOptions} />
+            {hasPlanData ? (
+              <Pie data={planDistributionData} options={globalOptions} />
+            ) : (
+              <p className="text-xs font-medium text-slate-400">
+                No active plan subscriptions found
+              </p>
+            )}
           </div>
         </div>
 
